@@ -42,16 +42,16 @@
 #include "projectversion.h"
 
 // HERE you have to define your plug-in, company name, email and web
-#define stringPluginName		"Panner"
+#define stringPluginName		"PulquiLimiter"
 
-#define stringOriginalFilename	"Panner.vst3"
+#define stringOriginalFilename	"PulquiLimiter.vst3"
 #if SMTG_PLATFORM_64
-#define stringFileDescription	stringPluginName" VST3-SDK (64Bit)"
+#define stringFileDescription	"PulquiLimiter VST3 (64Bit)"
 #else
-#define stringFileDescription	stringPluginName" VST3-SDK"
+#define stringFileDescription	"PulquiLimiter VST3"
 #endif
-#define stringCompanyWeb		"http://www.steinberg.net"
-#define stringCompanyEmail		"mailto:info@steinberg.de"
-#define stringCompanyName		"Steinberg Media Technologies"
-#define stringLegalCopyright	"© 2024 Steinberg Media Technologies"
+#define stringCompanyWeb		"https://github.com/Lucarda"
+#define stringCompanyEmail		"mailto:lucarda27@hotmail.com"
+#define stringCompanyName		"Lucas Cordiviola"
+#define stringLegalCopyright	"Copyright(c) 2024 Lucas Cordiviola."
 #define stringLegalTrademarks	"VST is a trademark of Steinberg Media Technologies GmbH"

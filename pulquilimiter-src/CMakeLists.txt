@@ -3,7 +3,7 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "")
 
 project(PulquiLimiter
     VERSION 1.0.0.0
-    DESCRIPTION "PulquiLimiter VST 3 Plug-in"
+    DESCRIPTION "PulquiLimiter VST3 Plug-in"
 )
 
 add_subdirectory(external)

@@ -41,7 +41,7 @@
 #include "../include/plugids.h"			// for uids
 #include "../include/version.h"			// for version and naming
 
-#define stringSubCategory Vst::PlugType::kSpatialFx	// Subcategory for this plug-in (to be changed if needed, see PlugType in ivstaudioprocessor.h)
+#define stringSubCategory Vst::PlugType::kFxDynamics // Subcategory for this plug-in (to be changed if needed, see PlugType in ivstaudioprocessor.h)
 
 BEGIN_FACTORY_DEF (stringCompanyName, stringCompanyWeb,	stringCompanyEmail)
 
