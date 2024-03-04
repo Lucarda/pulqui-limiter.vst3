@@ -4,7 +4,7 @@
 // Category    : Examples
 // Filename    : public.sdk/samples/vst/panner/source/plugfactory.cpp
 // Created by  : Steinberg, 02/2020
-// Description : Panner Example for VST 3
+// Description : PulquiLimiter Example for VST 3
 //
 //-----------------------------------------------------------------------------
 // LICENSE
@@ -45,7 +45,7 @@
 
 BEGIN_FACTORY_DEF (stringCompanyName, stringCompanyWeb,	stringCompanyEmail)
 
-	DEF_CLASS2 (INLINE_UID_FROM_FUID(Steinberg::Panner::MyProcessorUID),
+	DEF_CLASS2 (INLINE_UID_FROM_FUID(Steinberg::PulquiLimiter::MyProcessorUID),
 				PClassInfo::kManyInstances,	// cardinality  
 				kVstAudioEffectClass,	// the component category (do not change this)
 				stringPluginName,		// here the plug-in name (to be changed)
@@ -53,9 +53,9 @@ BEGIN_FACTORY_DEF (stringCompanyName, stringCompanyWeb,	stringCompanyEmail)
 				stringSubCategory,		// Subcategory for this plug-in (to be changed)
 				FULL_VERSION_STR,		// Plug-in version (to be changed)
 				kVstVersionString,		// the VST 3 SDK version (do not change this, always use this define)
-				Steinberg::Panner::PlugProcessor::createInstance)	// function pointer called when this component should be instantiated
+				Steinberg::PulquiLimiter::PlugProcessor::createInstance)	// function pointer called when this component should be instantiated
 
-	DEF_CLASS2 (INLINE_UID_FROM_FUID(Steinberg::Panner::MyControllerUID),
+	DEF_CLASS2 (INLINE_UID_FROM_FUID(Steinberg::PulquiLimiter::MyControllerUID),
 				PClassInfo::kManyInstances,  // cardinality   
 				kVstComponentControllerClass,// the Controller category (do not change this)
 				stringPluginName "Controller",	// controller name (can be the same as the component name)
@@ -63,7 +63,7 @@ BEGIN_FACTORY_DEF (stringCompanyName, stringCompanyWeb,	stringCompanyEmail)
 				"",						// not used here
 				FULL_VERSION_STR,		// Plug-in version (to be changed)
 				kVstVersionString,		// the VST 3 SDK version (do not change this, always use this define)
-				Steinberg::Panner::PlugController::createInstance)// function pointer called when this component should be instantiated
+				Steinberg::PulquiLimiter::PlugController::createInstance)// function pointer called when this component should be instantiated
 
 END_FACTORY
 

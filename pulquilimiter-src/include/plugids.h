@@ -4,7 +4,7 @@
 // Category    : Examples
 // Filename    : public.sdk/samples/vst/panner/include/plugids.h
 // Created by  : Steinberg, 02/2020
-// Description : Panner Example for VST 3
+// Description : PulquiLimiter Example for VST 3
 //
 //-----------------------------------------------------------------------------
 // LICENSE
@@ -37,14 +37,14 @@
 #pragma once
 
 namespace Steinberg {
-namespace Panner {
+namespace PulquiLimiter {
 
 // HERE are defined the parameter Ids which are exported to the host
-enum PannerParams : Vst::ParamID
+enum PulquiLimiterParams : Vst::ParamID
 {
 	kBypassId = 100,
 
-	kParamPanId = 102,
+	kParamTreshId = 102,
 };
 
 
@@ -54,5 +54,5 @@ static const FUID MyProcessorUID (0x35D39AF6, 0x60C5481A, 0x84A8AD32, 0x4A69DDF5
 static const FUID MyControllerUID (0x40C4A6E7, 0x1067495C, 0xB1F15D3D, 0x45BFD8CC);
 
 //------------------------------------------------------------------------
-} // namespace Panner
+} // namespace PulquiLimiter
 } // namespace Steinberg

@@ -4,7 +4,7 @@
 // Category    : Examples
 // Filename    : public.sdk/samples/vst/panner/source/plugcontroller.cpp
 // Created by  : Steinberg, 02/2020
-// Description : Panner Example for VST 3
+// Description : PulquiLimiter Example for VST 3
 //
 //-----------------------------------------------------------------------------
 // LICENSE
@@ -48,7 +48,7 @@
 using namespace VSTGUI;
 
 namespace Steinberg {
-namespace Panner {
+namespace PulquiLimiter {
 
 // example of custom parameter (overwriting to and fromString)
 //------------------------------------------------------------------------
@@ -152,9 +152,9 @@ tresult PLUGIN_API PlugController::initialize (FUnknown* context)
 		//---Create Parameters------------
 		parameters.addParameter (STR16 ("Bypass"), nullptr, 1, 0,
 		                         Vst::ParameterInfo::kCanAutomate | Vst::ParameterInfo::kIsBypass,
-		                         PannerParams::kBypassId);
+		                         PulquiLimiterParams::kBypassId);
 
-		auto* panParam = new PanParameter (Vst::ParameterInfo::kCanAutomate, PannerParams::kParamPanId);
+		auto* panParam = new PanParameter (Vst::ParameterInfo::kCanAutomate, PulquiLimiterParams::kParamTreshId);
 		parameters.addParameter (panParam);
 	}
 	return kResultTrue;
@@ -182,7 +182,7 @@ tresult PLUGIN_API PlugController::getParameterIDFromFunctionName (Vst::UnitID u
 	paramID = kNoParamId;
 
 	if (unitID == kRootUnitId && FIDStringsEqual (functionName, FunctionNameType::kPanPosCenterX))
-		paramID = PannerParams::kParamPanId;
+		paramID = PulquiLimiterParams::kParamTreshId;
 
 	return (paramID != kNoParamId) ? kResultOk : kResultFalse;
 }
@@ -200,7 +200,7 @@ tresult PLUGIN_API PlugController::setComponentState (IBStream* state)
 	float savedParam1 = 0.f;
 	if (streamer.readFloat (savedParam1) == false)
 		return kResultFalse;
-	setParamNormalized (PannerParams::kParamPanId, savedParam1);
+	setParamNormalized (PulquiLimiterParams::kParamTreshId, savedParam1);
 
 	// read the bypass
 	int32 bypassState;

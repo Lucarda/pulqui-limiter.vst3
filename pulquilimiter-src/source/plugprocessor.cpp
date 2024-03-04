@@ -4,7 +4,7 @@
 // Category    : Examples
 // Filename    : public.sdk/samples/vst/panner/source/plugprocessor.cpp
 // Created by  : Steinberg, 02/2020
-// Description : Panner Example for VST 3
+// Description : PulquiLimiter Example for VST 3
 //
 //-----------------------------------------------------------------------------
 // LICENSE
@@ -43,7 +43,7 @@
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 
 namespace Steinberg {
-namespace Panner {
+namespace PulquiLimiter {
 
 #ifndef kPI
 #define kPI 3.14159265358979323846
@@ -133,13 +133,13 @@ tresult PLUGIN_API PlugProcessor::process (Vst::ProcessData& data)
 				int32 numPoints = paramQueue->getPointCount ();
 				switch (paramQueue->getParameterId ())
 				{
-					case PannerParams::kParamPanId:
+					case PulquiLimiterParams::kParamTreshId:
 						if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
 						    kResultTrue)
-							mPanValue = value;
+							mThreshValue = value;
 						break;
 
-					case PannerParams::kBypassId:
+					case PulquiLimiterParams::kBypassId:
 						if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
 						    kResultTrue)
 							mBypass = (value > 0.5f);
@@ -187,7 +187,7 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
 	if (mBypass)
 		getStereoPanCoef (kPanLawEqualPower, 0.f, leftPan, rightPan);
 	else
-		getStereoPanCoef (kPanLawEqualPower, mPanValue, leftPan, rightPan);
+		getStereoPanCoef (kPanLawEqualPower, mThreshValue, leftPan, rightPan);
 
 	//---pan : 1 -> 2---------------------
 	SampleType tmp;
@@ -239,7 +239,7 @@ tresult PLUGIN_API PlugProcessor::setState (IBStream* state)
 	if (streamer.readInt32 (savedBypass) == false)
 		return kResultFalse;
 
-	mPanValue = savedPan;
+	mThreshValue = savedPan;
 	mBypass = savedBypass > 0;
 
 	return kResultOk;
@@ -250,7 +250,7 @@ tresult PLUGIN_API PlugProcessor::getState (IBStream* state)
 {
 	// here we need to save the model (preset or project)
 
-	float toSavePan = mPanValue;
+	float toSavePan = mThreshValue;
 	int32 toSaveBypass = mBypass ? 1 : 0;
 
 	IBStreamer streamer (state, kLittleEndian);

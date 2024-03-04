@@ -4,7 +4,7 @@
 // Category    : Examples
 // Filename    : public.sdk/samples/vst/panner/include/plugprocessor.h
 // Created by  : Steinberg, 02/2020
-// Description : Panner Example for VST 3
+// Description : PulquiLimiter Example for VST 3
 //
 //-----------------------------------------------------------------------------
 // LICENSE
@@ -39,7 +39,7 @@
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
 namespace Steinberg {
-namespace Panner {
+namespace PulquiLimiter {
 
 //-----------------------------------------------------------------------------
 class PlugProcessor : public Vst::AudioEffect
@@ -75,11 +75,11 @@ protected:
 	tresult processAudio (Vst::ProcessData& data);
 	tresult (PlugProcessor::*processAudioPtr) (Vst::ProcessData& data);
 		
-	Vst::ParamValue mPanValue = 0;
+	Vst::ParamValue mThreshValue = 0;
 
 	bool mBypass = false;
 };
 
 //------------------------------------------------------------------------
-} // namespace Panner
+} // namespace PulquiLimiter
 } // namespace Steinberg

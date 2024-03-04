@@ -4,7 +4,7 @@
 // Category    : Examples
 // Filename    : public.sdk/samples/vst/panner/include/plugcontroller.h
 // Created by  : Steinberg, 02/2020
-// Description : Panner Example for VST 3
+// Description : PulquiLimiter Example for VST 3
 //
 //-----------------------------------------------------------------------------
 // LICENSE
@@ -41,7 +41,7 @@
 #include "pluginterfaces/vst/ivstparameterfunctionname.h"
 
 namespace Steinberg {
-namespace Panner {
+namespace PulquiLimiter {
 
 //-----------------------------------------------------------------------------
 class PlugController : public Vst::EditController,
@@ -77,5 +77,5 @@ public:
 };
 
 //------------------------------------------------------------------------
-} // namespace Panner
+} // namespace PulquiLimiter
 } // namespace Steinberg
