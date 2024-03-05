@@ -42,6 +42,7 @@
 
 #include "pluginterfaces/base/ibstream.h"
 #include "pluginterfaces/base/ustring.h"
+#include "base/source/fstring.h"
 
 #include <string_view>
 
@@ -52,21 +53,21 @@ namespace PulquiLimiter {
 
 // example of custom parameter (overwriting to and fromString)
 //------------------------------------------------------------------------
-class PanParameter : public Vst::Parameter
+class ThreshParameter : public Vst::Parameter
 {
 public:
-	PanParameter (int32 flags, int32 id);
+	ThreshParameter (int32 flags, int32 id);
 
 	void toString (Vst::ParamValue normValue, Vst::String128 string) const SMTG_OVERRIDE;
 	bool fromString (const Vst::TChar* string, Vst::ParamValue& normValue) const SMTG_OVERRIDE;
 };
 
 //------------------------------------------------------------------------
-// PanParameter Implementation
+// ThreshParameter Implementation
 //------------------------------------------------------------------------
-PanParameter::PanParameter (int32 flags, int32 id)
+ThreshParameter::ThreshParameter (int32 flags, int32 id)
 {
-	Steinberg::UString (info.title, USTRINGSIZE (info.title)).assign (USTRING ("Pan"));
+	Steinberg::UString (info.title, USTRINGSIZE (info.title)).assign (USTRING ("Threshold"));
 	Steinberg::UString (info.units, USTRINGSIZE (info.units)).assign (USTRING (""));
 
 	info.flags = flags;
@@ -79,66 +80,36 @@ PanParameter::PanParameter (int32 flags, int32 id)
 }
 
 //------------------------------------------------------------------------
-void PanParameter::toString (Vst::ParamValue normValue, Vst::String128 string) const
+void ThreshParameter::toString (Vst::ParamValue normValue, Vst::String128 string) const
 {
 	char text[32];
-	if (normValue >= 0.505)
+	if (normValue > 0.0001)
 	{
-		snprintf (text, 32, "R %d", int32 ((normValue - 0.5f) * 200 + 0.5f));
-	}
-	else if (normValue <= 0.495)
-	{
-		snprintf (text, 32, "L %d", int32 ((0.5f - normValue) * 200 + 0.5f));
+		snprintf (text, 32, "%.2f", 20 * log10f ((float)normValue));
 	}
 	else
 	{
-		strcpy (text, "C");
+		strcpy (text, "-oo");
 	}
 
 	Steinberg::UString (string, 128).fromAscii (text);
 }
 
 //------------------------------------------------------------------------
-bool PanParameter::fromString (const Vst::TChar* string, Vst::ParamValue& normValue) const
+bool ThreshParameter::fromString (const Vst::TChar* string, Vst::ParamValue& normValue) const
 {
-	std::u16string_view stringView (string);
-	auto pos = stringView.find_first_of (u"C");
-	if (pos != std::string::npos)
+	String wrapper ((Steinberg::Vst::TChar*)string); // don't know buffer size here!
+	double tmp = 0.0;
+	if (wrapper.scanFloat (tmp))
 	{
-		normValue = 0.5;
-		return true;
-	}
-	else
-	{
-		bool left = stringView.find_first_of (u"L") == 0;
-		bool right = stringView.find_first_of (u"R") == 0;
-		if (left || right)
-			stringView = {stringView.data () + 1, stringView.size () - 1};
-		auto string8 = VST3::StringConvert::convert (stringView.data ());
-		char* end = nullptr;
-		double tmp = strtod (string8.data (), &end);
-		if (end != string8.data ())
+		// allow only values between -oo and 0dB
+		if (tmp > 0.0)
 		{
-			if (tmp < 0)
-			{
-				left = true;
-				if (tmp < -100)
-					tmp = 100;
-				else
-					tmp = -tmp;
-			}
-			else if (tmp > 100.0)
-			{
-				normValue = 1;
-				return true;
-			}
-			if (!left)
-				normValue = tmp / 200 + 0.5;
-			else
-				normValue = 0.5 - tmp / 200;
-
-			return true;
+			tmp = -tmp;
 		}
+
+		normValue = expf (logf (10.f) * (float)tmp / 20.f);
+		return true;
 	}
 	return false;
 }
@@ -154,8 +125,8 @@ tresult PLUGIN_API PlugController::initialize (FUnknown* context)
 		                         Vst::ParameterInfo::kCanAutomate | Vst::ParameterInfo::kIsBypass,
 		                         PulquiLimiterParams::kBypassId);
 
-		auto* panParam = new PanParameter (Vst::ParameterInfo::kCanAutomate, PulquiLimiterParams::kParamTreshId);
-		parameters.addParameter (panParam);
+		auto* threshParam = new ThreshParameter (Vst::ParameterInfo::kCanAutomate, PulquiLimiterParams::kParamTreshId);
+		parameters.addParameter (threshParam);
 	}
 	return kResultTrue;
 }

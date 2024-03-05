@@ -75,7 +75,7 @@ protected:
 	tresult processAudio (Vst::ProcessData& data);
 	tresult (PlugProcessor::*processAudioPtr) (Vst::ProcessData& data);
 		
-	Vst::ParamValue mThreshValue = 0;
+	Vst::ParamValue mThreshValue = 0.5;
 
 	bool mBypass = false;
 };
