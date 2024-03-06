@@ -39,13 +39,14 @@
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
 namespace Steinberg {
-namespace PulquiLimiter {
+namespace Vst{
 
 //-----------------------------------------------------------------------------
 class PlugProcessor : public Vst::AudioEffect
 {
 public:
 	PlugProcessor ();
+
 
 	tresult PLUGIN_API initialize (FUnknown* context) SMTG_OVERRIDE;
 	tresult PLUGIN_API setBusArrangements (Vst::SpeakerArrangement* inputs, int32 numIns,
@@ -67,6 +68,7 @@ public:
 	{
 		kPanLawEqualPower = 0,
 	};
+		
 
 protected:
 	void getStereoPanCoef (int32 panType, float pan, float& left, float& right) const;
@@ -78,6 +80,7 @@ protected:
 	Vst::ParamValue mThreshValue = 0.5;
 
 	bool mBypass = false;
+	double fsamplrateOld;
 };
 
 //------------------------------------------------------------------------

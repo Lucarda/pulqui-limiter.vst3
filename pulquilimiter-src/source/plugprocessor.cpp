@@ -43,7 +43,7 @@
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 
 namespace Steinberg {
-namespace PulquiLimiter {
+namespace Vst{
 
 #ifndef kPI
 #define kPI 3.14159265358979323846
@@ -113,6 +113,23 @@ tresult PLUGIN_API PlugProcessor::setupProcessing (Vst::ProcessSetup& setup)
 //-----------------------------------------------------------------------------
 tresult PLUGIN_API PlugProcessor::setActive (TBool state)
 {
+	//PlugController::foosamplerate = processSetup.sampleRate;
+	/*
+	if (state)
+	{
+		Steinberg::Vst::IMessage* msg = allocateMessage ();
+		if (msg)
+		{
+			msg->setMessageID ("SR");
+			msg->getAttributes ()->setFloat ("SSRR", processSetup.sampleRate);
+			sendMessage (msg);
+			msg->release ();
+			
+			//printf("-----message: %.0f",100.0);
+			
+		}
+	}
+	*/
 	return AudioEffect::setActive (state);
 }
 
@@ -156,6 +173,8 @@ tresult PLUGIN_API PlugProcessor::process (Vst::ProcessData& data)
 		// nothing to do
 		return kResultOk;
 	}
+	
+	
 
 	return (this->*processAudioPtr) (data);
 }
@@ -201,6 +220,36 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
 		outputLeft[n] = tmp * leftPan;
 		outputRight[n] = tmp * rightPan;
 	}
+
+	//----------------
+
+	double fsamplerate = processSetup.sampleRate;
+	//---3) Write outputs parameter changes-----------
+	IParameterChanges* outParamChanges = data.outputParameterChanges;
+	// a new value of VuMeter will be send to the host
+	// (the host will send it back in sync to our controller for updating our editor)
+	if (outParamChanges && fsamplrateOld != fsamplerate)
+	{
+		int32 index = 0;
+		IParamValueQueue* paramQueue = outParamChanges->addParameterData (kParamSrateId, index);
+		if (paramQueue)
+		{
+			int32 index2 = 0;
+			paramQueue->addPoint (0, (fsamplerate/1e+6), index2);
+		}
+	}
+	fsamplrateOld = fsamplerate;	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	return kResultOk;
 }

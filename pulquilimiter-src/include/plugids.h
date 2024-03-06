@@ -37,7 +37,7 @@
 #pragma once
 
 namespace Steinberg {
-namespace PulquiLimiter {
+namespace Vst {
 
 // HERE are defined the parameter Ids which are exported to the host
 enum PulquiLimiterParams : Vst::ParamID
@@ -45,6 +45,7 @@ enum PulquiLimiterParams : Vst::ParamID
 	kBypassId = 100,
 
 	kParamTreshId = 102,
+	kParamSrateId = 103,
 };
 
 

@@ -41,7 +41,7 @@
 #include "pluginterfaces/vst/ivstparameterfunctionname.h"
 
 namespace Steinberg {
-namespace PulquiLimiter {
+namespace Vst {
 
 //-----------------------------------------------------------------------------
 class PlugController : public Vst::EditController,
@@ -69,11 +69,18 @@ public:
 	tresult PLUGIN_API getParameterIDFromFunctionName (Vst::UnitID unitID, FIDString functionName,
 	                                                   Vst::ParamID& paramID) override;
 
+
 	OBJ_METHODS (PlugController, Vst::EditController)
 	DEFINE_INTERFACES
 		DEF_INTERFACE (Vst::IParameterFunctionName)
 	END_DEFINE_INTERFACES (Vst::EditController)
 	DELEGATE_REFCOUNT (Vst::EditController)
+	
+	
+//-----------------------------------------------------------------------------
+protected:
+	double rsamplerate;
+
 };
 
 //------------------------------------------------------------------------

@@ -44,12 +44,14 @@
 #include "pluginterfaces/base/ustring.h"
 #include "base/source/fstring.h"
 
+#include "pluginterfaces/vst/vsttypes.h"
+
 #include <string_view>
 
 using namespace VSTGUI;
 
 namespace Steinberg {
-namespace PulquiLimiter {
+namespace Vst {
 
 // example of custom parameter (overwriting to and fromString)
 //------------------------------------------------------------------------
@@ -61,6 +63,7 @@ public:
 	void toString (Vst::ParamValue normValue, Vst::String128 string) const SMTG_OVERRIDE;
 	bool fromString (const Vst::TChar* string, Vst::ParamValue& normValue) const SMTG_OVERRIDE;
 };
+
 
 //------------------------------------------------------------------------
 // ThreshParameter Implementation
@@ -114,6 +117,53 @@ bool ThreshParameter::fromString (const Vst::TChar* string, Vst::ParamValue& nor
 	return false;
 }
 
+
+
+//------------------------------------------------------------------------
+
+class SrateParameter : public Vst::Parameter
+{
+public:
+	SrateParameter (int32 flags, int32 id);
+
+	void toString (Vst::ParamValue normValue, Vst::String128 string) const SMTG_OVERRIDE;
+	//bool fromString (const Vst::TChar* string, Vst::ParamValue& normValue) const SMTG_OVERRIDE;
+	//tresult notify (Steinberg::Vst::IMessage* message, Vst::String128 string) const; //SMTG_OVERRIDE;	
+};
+
+//------------------------------------------------------------------------
+SrateParameter::SrateParameter (int32 flags, int32 id)
+{
+	Steinberg::UString (info.title, USTRINGSIZE (info.title)).assign (USTRING ("Samplerate"));
+	Steinberg::UString (info.units, USTRINGSIZE (info.units)).assign (USTRING (""));
+
+	info.flags = flags;
+	info.id = id;
+	info.stepCount = 0;
+	info.defaultNormalizedValue = 0.5f;
+	info.unitId = Vst::kRootUnitId;
+
+	setNormalized (.5f);
+}
+
+//------------------------------------------------------------------------
+void SrateParameter::toString (Vst::ParamValue normValue, Vst::String128 string) const
+{
+	char text[100];
+	
+	int samplesdelay = 8192;
+	
+	float samplerate = (float)normValue*1e+6;
+	
+	float ms = ((1/samplerate)*samplesdelay)*1000;
+	
+	
+
+	snprintf (text, 100, "latency: %.2f ms @ %.0f hz (%d samples)", ms, samplerate, samplesdelay);
+
+	Steinberg::UString (string, 128).fromAscii (text);
+}
+
 //-----------------------------------------------------------------------------
 tresult PLUGIN_API PlugController::initialize (FUnknown* context)
 {
@@ -127,6 +177,9 @@ tresult PLUGIN_API PlugController::initialize (FUnknown* context)
 
 		auto* threshParam = new ThreshParameter (Vst::ParameterInfo::kCanAutomate, PulquiLimiterParams::kParamTreshId);
 		parameters.addParameter (threshParam);
+		
+		auto* srateParam = new SrateParameter (Vst::ParameterInfo::kCanAutomate, PulquiLimiterParams::kParamSrateId);
+		parameters.addParameter (srateParam);
 	}
 	return kResultTrue;
 }

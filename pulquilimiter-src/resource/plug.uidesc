@@ -29,7 +29,8 @@
 		"colors": {},
 		"control-tags": {
 			"Bypass": "100",
-			"ParamPan": "102"
+			"Samplerate": "103",
+			"Threshold": "102"
 		},
 		"custom": {
 			"FocusDrawing": {},
@@ -57,7 +58,7 @@
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "23"
+				"SelectedRow": "27"
 			},
 			"UIBitmapsDataSource": {
 				"SelectedRow": "0"
@@ -196,7 +197,7 @@
 							"back-color": "~ BlackCColor",
 							"background-offset": "0, 0",
 							"class": "CTextEdit",
-							"control-tag": "ParamPan",
+							"control-tag": "Threshold",
 							"default-value": "0.5",
 							"font": "~ NormalFont",
 							"font-antialias": "true",
@@ -225,7 +226,7 @@
 							"text-inset": "0, 0",
 							"text-rotation": "0",
 							"text-shadow-offset": "1, 1",
-							"title": "R 63",
+							"title": "-6.02",
 							"transparent": "true",
 							"value-precision": "2",
 							"wants-focus": "true",
@@ -236,7 +237,7 @@
 						"attributes": {
 							"bitmap-offset": "0, 0",
 							"class": "CSlider",
-							"control-tag": "ParamPan",
+							"control-tag": "Threshold",
 							"default-value": "0.5",
 							"draw-back": "true",
 							"draw-back-color": "~ GreyCColor",
@@ -261,6 +262,47 @@
 							"wants-focus": "true",
 							"wheel-inc-value": "0.1",
 							"zoom-factor": "10"
+						}
+					},
+					"CTextEdit": {
+						"attributes": {
+							"back-color": "~ BlackCColor",
+							"background-offset": "0, 0",
+							"class": "CTextEdit",
+							"control-tag": "Samplerate",
+							"default-value": "0.5",
+							"font": "~ NormalFont",
+							"font-antialias": "true",
+							"font-color": "~ WhiteCColor",
+							"frame-color": "~ BlackCColor",
+							"frame-width": "1",
+							"immediate-text-change": "false",
+							"max-value": "1",
+							"min-value": "0",
+							"mouse-enabled": "true",
+							"opacity": "0.6",
+							"origin": "30, 100",
+							"round-rect-radius": "6",
+							"secure-style": "false",
+							"shadow-color": "~ RedCColor",
+							"size": "335, 20",
+							"style-3D-in": "false",
+							"style-3D-out": "false",
+							"style-doubleclick": "false",
+							"style-no-draw": "false",
+							"style-no-frame": "false",
+							"style-no-text": "false",
+							"style-round-rect": "false",
+							"style-shadow-text": "false",
+							"text-alignment": "left",
+							"text-inset": "0, 0",
+							"text-rotation": "0",
+							"text-shadow-offset": "1, 1",
+							"title": "latency: 185.76 ms @ 44100 hz",
+							"transparent": "false",
+							"value-precision": "2",
+							"wants-focus": "true",
+							"wheel-inc-value": "0.1"
 						}
 					}
 				}
