@@ -58,7 +58,7 @@
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "27"
+				"SelectedRow": "3"
 			},
 			"UIBitmapsDataSource": {
 				"SelectedRow": "0"
@@ -96,10 +96,10 @@
 							"min-value": "0",
 							"mouse-enabled": "true",
 							"opacity": "0.61",
-							"origin": "340, 35",
+							"origin": "335, 35",
 							"round-rect-radius": "6",
 							"shadow-color": "~ RedCColor",
-							"size": "50, 20",
+							"size": "30, 20",
 							"style-3D-in": "false",
 							"style-3D-out": "false",
 							"style-no-draw": "false",
@@ -155,43 +155,6 @@
 							"wheel-inc-value": "0.1"
 						}
 					},
-					"CTextLabel": {
-						"attributes": {
-							"back-color": "~ BlackCColor",
-							"background-offset": "0, 0",
-							"class": "CTextLabel",
-							"default-value": "0.5",
-							"font": "~ NormalFont",
-							"font-antialias": "true",
-							"font-color": "~ WhiteCColor",
-							"frame-color": "~ BlackCColor",
-							"frame-width": "1",
-							"max-value": "1",
-							"min-value": "0",
-							"mouse-enabled": "true",
-							"opacity": "1",
-							"origin": "60, 95",
-							"round-rect-radius": "6",
-							"shadow-color": "~ RedCColor",
-							"size": "50, 20",
-							"style-3D-in": "false",
-							"style-3D-out": "false",
-							"style-no-draw": "false",
-							"style-no-frame": "false",
-							"style-no-text": "false",
-							"style-round-rect": "false",
-							"style-shadow-text": "false",
-							"text-alignment": "center",
-							"text-inset": "0, 0",
-							"text-rotation": "0",
-							"text-shadow-offset": "1, 1",
-							"title": "R",
-							"transparent": "true",
-							"value-precision": "2",
-							"wants-focus": "false",
-							"wheel-inc-value": "0.1"
-						}
-					},
 					"CTextEdit": {
 						"attributes": {
 							"back-color": "~ BlackCColor",
@@ -209,7 +172,7 @@
 							"min-value": "0",
 							"mouse-enabled": "true",
 							"opacity": "0.61",
-							"origin": "310, 35",
+							"origin": "295, 35",
 							"round-rect-radius": "6",
 							"secure-style": "false",
 							"shadow-color": "~ RedCColor",
@@ -226,7 +189,7 @@
 							"text-inset": "0, 0",
 							"text-rotation": "0",
 							"text-shadow-offset": "1, 1",
-							"title": "-6.02",
+							"title": "-4.26",
 							"transparent": "true",
 							"value-precision": "2",
 							"wants-focus": "true",
@@ -281,7 +244,7 @@
 							"min-value": "0",
 							"mouse-enabled": "true",
 							"opacity": "0.6",
-							"origin": "30, 100",
+							"origin": "30, 90",
 							"round-rect-radius": "6",
 							"secure-style": "false",
 							"shadow-color": "~ RedCColor",
@@ -298,9 +261,59 @@
 							"text-inset": "0, 0",
 							"text-rotation": "0",
 							"text-shadow-offset": "1, 1",
-							"title": "latency: 185.76 ms @ 44100 hz",
+							"title": "latency: 185.76 ms @ 44100 hz (8192 samples)",
 							"transparent": "false",
 							"value-precision": "2",
+							"wants-focus": "true",
+							"wheel-inc-value": "0.1"
+						}
+					},
+					"CCheckBox": {
+						"attributes": {
+							"autosize-to-fit": "false",
+							"boxfill-color": "~ WhiteCColor",
+							"boxframe-color": "~ BlackCColor",
+							"checkmark-color": "~ BlackCColor",
+							"class": "CCheckBox",
+							"default-value": "0.5",
+							"draw-crossbox": "false",
+							"font": "~ SystemFont",
+							"font-color": "~ WhiteCColor",
+							"frame-width": "1",
+							"max-value": "1",
+							"min-value": "0",
+							"mouse-enabled": "true",
+							"opacity": "0.6",
+							"origin": "30, 125",
+							"round-rect-radius": "0",
+							"size": "190, 20",
+							"title": "bypass (preserve latency)",
+							"transparent": "false",
+							"wants-focus": "true",
+							"wheel-inc-value": "0.1"
+						}
+					},
+					"CCheckBox": {
+						"attributes": {
+							"autosize-to-fit": "false",
+							"boxfill-color": "~ WhiteCColor",
+							"boxframe-color": "~ BlackCColor",
+							"checkmark-color": "~ BlackCColor",
+							"class": "CCheckBox",
+							"default-value": "0.5",
+							"draw-crossbox": "false",
+							"font": "~ SystemFont",
+							"font-color": "~ WhiteCColor",
+							"frame-width": "1",
+							"max-value": "1",
+							"min-value": "0",
+							"mouse-enabled": "true",
+							"opacity": "0.61",
+							"origin": "270, 125",
+							"round-rect-radius": "0",
+							"size": "95, 20",
+							"title": "auto make-up",
+							"transparent": "false",
 							"wants-focus": "true",
 							"wheel-inc-value": "0.1"
 						}
