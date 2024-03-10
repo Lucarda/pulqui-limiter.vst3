@@ -238,7 +238,17 @@ tresult PLUGIN_API PlugController::setComponentState (IBStream* state)
 	int32 bypassState;
 	if (streamer.readInt32 (bypassState) == false)
 		return kResultFalse;
-	setParamNormalized (kBypassId, bypassState ? 1 : 0);
+	setParamNormalized (PulquiLimiterParams::kBypassId, bypassState ? 1 : 0);
+	
+	int32 LatencyBypassState;
+	if (streamer.readInt32 (LatencyBypassState) == false)
+		return kResultFalse;
+	setParamNormalized (PulquiLimiterParams::kParamLatencyBypassId, LatencyBypassState ? 1 : 0);
+	
+	int32 MakeUpState;
+	if (streamer.readInt32 (MakeUpState) == false)
+		return kResultFalse;
+	setParamNormalized (PulquiLimiterParams::kParamMakeUpId, MakeUpState ? 1 : 0);
 
 	return kResultOk;
 }

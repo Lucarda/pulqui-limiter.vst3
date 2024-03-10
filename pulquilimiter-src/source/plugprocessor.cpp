@@ -171,7 +171,7 @@ tresult PLUGIN_API PlugProcessor::process (Vst::ProcessData& data)
 					case PulquiLimiterParams::kParamMakeUpId:
 						if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
 						    kResultTrue)
-							mMakeUpId = (value > 0.5f);
+							mMakeUp = (value > 0.5f);
 						break;
 				}
 			}
@@ -289,9 +289,19 @@ tresult PLUGIN_API PlugProcessor::setState (IBStream* state)
 	int32 savedBypass = 0;
 	if (streamer.readInt32 (savedBypass) == false)
 		return kResultFalse;
+		
+	int32 savedBypassLatency = 0;
+	if (streamer.readInt32 (savedBypassLatency) == false)
+		return kResultFalse;
+		
+	int32 savedMakeup = 0;
+	if (streamer.readInt32 (savedMakeup) == false)
+		return kResultFalse;
 
 	mThreshValue = savedPan;
 	mBypass = savedBypass > 0;
+	mLatencyBypass = savedBypassLatency > 0;
+	mMakeUp = savedMakeup > 0;
 
 	return kResultOk;
 }
@@ -303,10 +313,15 @@ tresult PLUGIN_API PlugProcessor::getState (IBStream* state)
 
 	float toSavePan = mThreshValue;
 	int32 toSaveBypass = mBypass ? 1 : 0;
+	int32 toSavemLatencyBypass = mLatencyBypass ? 1 : 0;
+	int32 toSavemMakeUp = mMakeUp ? 1 : 0;
 
 	IBStreamer streamer (state, kLittleEndian);
 	streamer.writeFloat (toSavePan);
 	streamer.writeInt32 (toSaveBypass);
+	streamer.writeInt32 (toSavemLatencyBypass);
+	streamer.writeInt32 (toSavemMakeUp);
+	
 
 	return kResultOk;
 }
