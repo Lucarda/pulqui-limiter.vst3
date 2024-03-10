@@ -30,17 +30,10 @@ target_link_libraries(PulquiLimiter
 smtg_target_add_plugin_resources(PulquiLimiter
     RESOURCES
         resource/plug.uidesc
-        resource/background.png
-        resource/animation_knob.png
-        resource/background_2x.png
-        resource/background_3x.png
-        resource/animation_knob_3x.png
 )
 
 smtg_target_add_plugin_snapshots (PulquiLimiter
     RESOURCES
-        resource/A2EAF7DB320640F48EDE380DDF89562C_snapshot.png
-        resource/A2EAF7DB320640F48EDE380DDF89562C_snapshot_2.0x.png
 )
 
 smtg_target_configure_version_file(PulquiLimiter)

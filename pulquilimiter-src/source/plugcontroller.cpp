@@ -174,11 +174,19 @@ tresult PLUGIN_API PlugController::initialize (FUnknown* context)
 		parameters.addParameter (STR16 ("Bypass"), nullptr, 1, 0,
 		                         Vst::ParameterInfo::kCanAutomate | Vst::ParameterInfo::kIsBypass,
 		                         PulquiLimiterParams::kBypassId);
+		                         
+		parameters.addParameter (STR16 ("LatencyBypass"), nullptr, 1, 0,
+		                         Vst::ParameterInfo::kCanAutomate,
+		                         PulquiLimiterParams::kParamLatencyBypassId);
+		                         
+		parameters.addParameter (STR16 ("MakeUp"), nullptr, 1, 0,
+		                         Vst::ParameterInfo::kCanAutomate,
+		                         PulquiLimiterParams::kParamMakeUpId);
 
 		auto* threshParam = new ThreshParameter (Vst::ParameterInfo::kCanAutomate, PulquiLimiterParams::kParamTreshId);
 		parameters.addParameter (threshParam);
 		
-		auto* srateParam = new SrateParameter (Vst::ParameterInfo::kCanAutomate, PulquiLimiterParams::kParamSrateId);
+		auto* srateParam = new SrateParameter (Vst::ParameterInfo::kIsReadOnly , PulquiLimiterParams::kParamSrateId);
 		parameters.addParameter (srateParam);
 	}
 	return kResultTrue;

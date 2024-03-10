@@ -81,6 +81,8 @@ protected:
 
 	bool mBypass = false;
 	double fsamplrateOld;
+	bool mLatencyBypass = false;
+	bool mMakeUpId = false;
 };
 
 //------------------------------------------------------------------------

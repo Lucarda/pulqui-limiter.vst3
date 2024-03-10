@@ -161,6 +161,18 @@ tresult PLUGIN_API PlugProcessor::process (Vst::ProcessData& data)
 						    kResultTrue)
 							mBypass = (value > 0.5f);
 						break;
+						
+					case PulquiLimiterParams::kParamLatencyBypassId:
+						if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
+						    kResultTrue)
+							mLatencyBypass = (value > 0.5f);
+						break;
+						
+					case PulquiLimiterParams::kParamMakeUpId:
+						if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
+						    kResultTrue)
+							mMakeUpId = (value > 0.5f);
+						break;
 				}
 			}
 		}
@@ -240,16 +252,6 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
 	}
 	fsamplrateOld = fsamplerate;	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 	return kResultOk;
 }
