@@ -149,16 +149,10 @@ SrateParameter::SrateParameter (int32 flags, int32 id)
 //------------------------------------------------------------------------
 void SrateParameter::toString (Vst::ParamValue normValue, Vst::String128 string) const
 {
-	char text[100];
-	
-	int samplesdelay = 8192;
-	
-	float samplerate = (float)normValue*1e+6;
-	
+	char text[100];	
+	int samplesdelay = 8192;	
+	float samplerate = (float)normValue*1e+6;	
 	float ms = ((1/samplerate)*samplesdelay)*1000;
-	
-	
-
 	snprintf (text, 100, "latency: %.2f ms @ %.0f hz (%d samples)", ms, samplerate, samplesdelay);
 
 	Steinberg::UString (string, 128).fromAscii (text);
@@ -205,21 +199,6 @@ IPlugView* PLUGIN_API PlugController::createView (const char* _name)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API PlugController::getParameterIDFromFunctionName (Vst::UnitID unitID,
-                                                                   FIDString functionName,
-                                                                   Vst::ParamID& paramID)
-{
-	using namespace Vst;
-
-	paramID = kNoParamId;
-
-	if (unitID == kRootUnitId && FIDStringsEqual (functionName, FunctionNameType::kPanPosCenterX))
-		paramID = PulquiLimiterParams::kParamTreshId;
-
-	return (paramID != kNoParamId) ? kResultOk : kResultFalse;
-}
-
-//------------------------------------------------------------------------
 tresult PLUGIN_API PlugController::setComponentState (IBStream* state)
 {
 	// we receive the current state of the component (processor part)
@@ -251,6 +230,23 @@ tresult PLUGIN_API PlugController::setComponentState (IBStream* state)
 	setParamNormalized (PulquiLimiterParams::kParamMakeUpId, MakeUpState ? 1 : 0);
 
 	return kResultOk;
+}
+
+/* this function is unused */
+
+//------------------------------------------------------------------------
+tresult PLUGIN_API PlugController::getParameterIDFromFunctionName (Vst::UnitID unitID,
+                                                                   FIDString functionName,
+                                                                   Vst::ParamID& paramID)
+{
+	using namespace Vst;
+
+	paramID = kNoParamId;
+
+	if (unitID == kRootUnitId && FIDStringsEqual (functionName, FunctionNameType::kPanPosCenterX))
+		paramID = PulquiLimiterParams::kParamTreshId;
+
+	return (paramID != kNoParamId) ? kResultOk : kResultFalse;
 }
 
 //------------------------------------------------------------------------

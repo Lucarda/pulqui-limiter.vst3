@@ -76,7 +76,7 @@ public:
 	END_DEFINE_INTERFACES (Vst::EditController)
 	DELEGATE_REFCOUNT (Vst::EditController)
 	
-	
+
 //-----------------------------------------------------------------------------
 protected:
 	double rsamplerate;
