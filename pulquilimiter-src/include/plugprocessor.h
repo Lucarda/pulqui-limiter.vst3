@@ -38,12 +38,35 @@
 
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
+
+
 namespace Steinberg {
 namespace Vst{
+	
+#define PULQUI_SIZE 4096
+#define PULQUI_SCAN_SIZE 8192
 
 //-----------------------------------------------------------------------------
 class PlugProcessor : public Vst::AudioEffect
 {
+	
+template <typename SampleType>	
+struct Pulqui{
+	SampleType x_thresh;
+	//const float* input;
+	//float*       output;
+	SampleType* x_ramchpositive;
+	SampleType* x_ramchnegative;
+	SampleType* x_ramch;
+	SampleType* x_bufsignal;
+	SampleType* x_bufsignalout;
+	SampleType* x_bufpulqui;
+	int x_scanlen, x_len, x_pulquiblock;
+	//const float* x_makeup; 
+	//const float* x_bypass;
+	//float* report_latency;
+};
+
 public:
 	PlugProcessor ();
 
@@ -75,10 +98,10 @@ protected:
 	
 	template <typename SampleType>
 	tresult processAudio (Vst::ProcessData& data);
+	
 	tresult (PlugProcessor::*processAudioPtr) (Vst::ProcessData& data);
 		
 	Vst::ParamValue mThreshValue = 0.5;
-
 	bool mBypass = false;
 	double fsamplrateOld;
 	bool mLatencyBypass = false;
