@@ -45,28 +45,11 @@ namespace Vst{
 	
 #define PULQUI_SIZE 4096
 #define PULQUI_SCAN_SIZE 8192
+#define t_sample float
 
 //-----------------------------------------------------------------------------
 class PlugProcessor : public Vst::AudioEffect
 {
-	
-template <typename SampleType>	
-struct Pulqui{
-	SampleType x_thresh;
-	//const float* input;
-	//float*       output;
-	SampleType* x_ramchpositive;
-	SampleType* x_ramchnegative;
-	SampleType* x_ramch;
-	SampleType* x_bufsignal;
-	SampleType* x_bufsignalout;
-	SampleType* x_bufpulqui;
-	int x_scanlen, x_len, x_pulquiblock;
-	//const float* x_makeup; 
-	//const float* x_bypass;
-	//float* report_latency;
-};
-
 public:
 	PlugProcessor ();
 
@@ -80,12 +63,16 @@ public:
 	tresult PLUGIN_API setupProcessing (Vst::ProcessSetup& setup) SMTG_OVERRIDE;
 	tresult PLUGIN_API setActive (TBool state) SMTG_OVERRIDE;
 	tresult PLUGIN_API process (Vst::ProcessData& data) SMTG_OVERRIDE;
+		/** Called at the end before destructor */
+	tresult PLUGIN_API terminate () SMTG_OVERRIDE;
 
 //------------------------------------------------------------------------
 	tresult PLUGIN_API setState (IBStream* state) SMTG_OVERRIDE;
 	tresult PLUGIN_API getState (IBStream* state) SMTG_OVERRIDE;
 
 	static FUnknown* createInstance (void*) { return (Vst::IAudioProcessor*)new PlugProcessor (); }
+	
+	void initStruct (void);
 
 	enum
 	{
@@ -106,6 +93,54 @@ protected:
 	double fsamplrateOld;
 	bool mLatencyBypass = false;
 	bool mMakeUp = false;
+	
+	t_sample* x_ramchpositive;
+/*	
+	struct Pulqui{
+		t_sample x_thresh;
+		//const float* input;
+		//float*       output;
+		t_sample *x_ramchpositive[PULQUI_SCAN_SIZE * 2];
+		t_sample *x_ramchnegative[PULQUI_SCAN_SIZE * 2];
+		t_sample *x_ramch[PULQUI_SIZE * 2];
+		t_sample *x_bufsignal[PULQUI_SIZE * 2];
+		t_sample *x_bufsignalout[PULQUI_SIZE * 2];
+		t_sample *x_bufpulqui[PULQUI_SIZE * 2];
+		int x_scanlen, x_len, x_pulquiblock;
+		//const float* x_makeup; 
+		//const float* x_bypass;
+		//float* report_latency;
+		char isStereo;
+	};
+*/	
+
+	struct Pulqui{
+		t_sample x_thresh;
+		//const float* input;
+		//float*       output;
+		t_sample *x_ramchpositive;
+		t_sample *x_ramchnegative;
+		t_sample *x_ramch;
+		t_sample *x_bufsignal;
+		t_sample *x_bufsignalout;
+		t_sample *x_bufpulqui;
+		int x_scanlen, x_len, x_pulquiblock;
+		//const float* x_makeup; 
+		//const float* x_bypass;
+		//float* report_latency;
+		char isStereo;
+	};
+	
+	Pulqui x;
+	
+
+	/*
+	template <typename SampleType>
+	SampleType* input1;
+	SampleType* input2;
+	SampleType* output1;
+	SampleType* output2;
+	*/
 };
 
 //------------------------------------------------------------------------

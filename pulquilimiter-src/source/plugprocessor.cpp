@@ -41,6 +41,7 @@
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/base/ibstream.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
+#include <stdlib.h>
 
 namespace Steinberg {
 namespace Vst{
@@ -70,9 +71,9 @@ tresult PLUGIN_API PlugProcessor::initialize (FUnknown* context)
 		return kResultFalse;
 
 	//---create Audio In/Out busses------
-	// we want a Mono Input and a Stereo Output
-	addAudioInput (STR16 ("AudioInput"), Vst::SpeakerArr::kMono);
-	addAudioOutput (STR16 ("AudioOutput"), Vst::SpeakerArr::kStereo);
+	// we want a stereo Input and a Stereo Output
+	addAudioInput (STR16 ("Stereo In"), SpeakerArr::kStereo);
+	addAudioOutput (STR16 ("Stereo Out"), SpeakerArr::kStereo);
 
 	return kResultTrue;
 }
@@ -90,11 +91,59 @@ tresult PLUGIN_API PlugProcessor::setBusArrangements (Vst::SpeakerArrangement* i
                                                       Vst::SpeakerArrangement* outputs,
                                                       int32 numOuts)
 {
-	// we only support mono to stereo
-	if (numIns == 1 && numOuts == 1 && inputs[0] == Vst::SpeakerArr::kMono &&
-	    outputs[0] == Vst::SpeakerArr::kStereo)
+	if (numIns == 1 && numOuts == 1)
 	{
-		return AudioEffect::setBusArrangements (inputs, numIns, outputs, numOuts);
+		// the host wants Mono => Mono (or 1 channel -> 1 channel)
+		if (SpeakerArr::getChannelCount (inputs[0]) == 1 &&
+		    SpeakerArr::getChannelCount (outputs[0]) == 1)
+		{
+			auto* bus = FCast<AudioBus> (audioInputs.at (0));
+			if (bus)
+			{
+				// check if we are Mono => Mono, if not we need to recreate the busses
+				if (bus->getArrangement () != inputs[0])
+				{
+					getAudioInput (0)->setArrangement (inputs[0]);
+					getAudioInput (0)->setName (STR16 ("Mono In"));
+					getAudioOutput (0)->setArrangement (outputs[0]);
+					getAudioOutput (0)->setName (STR16 ("Mono Out"));
+				}
+				x.isStereo = 0;
+				return kResultOk;
+			}
+		}
+		// the host wants something else than Mono => Mono,
+		// in this case we are always Stereo => Stereo
+		else
+		{
+			auto* bus = FCast<AudioBus> (audioInputs.at (0));
+			if (bus)
+			{
+				tresult result = kResultFalse;
+
+				// the host wants 2->2 (could be LsRs -> LsRs)
+				if (SpeakerArr::getChannelCount (inputs[0]) == 2 &&
+				    SpeakerArr::getChannelCount (outputs[0]) == 2)
+				{
+					getAudioInput (0)->setArrangement (inputs[0]);
+					getAudioInput (0)->setName (STR16 ("Stereo In"));
+					getAudioOutput (0)->setArrangement (outputs[0]);
+					getAudioOutput (0)->setName (STR16 ("Stereo Out"));
+					result = kResultTrue;
+				}
+				// the host want something different than 1->1 or 2->2 : in this case we want stereo
+				else if (bus->getArrangement () != SpeakerArr::kStereo)
+				{
+					getAudioInput (0)->setArrangement (SpeakerArr::kStereo);
+					getAudioInput (0)->setName (STR16 ("Stereo In"));
+					getAudioOutput (0)->setArrangement (SpeakerArr::kStereo);
+					getAudioOutput (0)->setName (STR16 ("Stereo Out"));
+					result = kResultFalse;
+				}
+				x.isStereo = 1;
+				return result;
+			}
+		}
 	}
 	return kResultFalse;
 }
@@ -103,11 +152,52 @@ tresult PLUGIN_API PlugProcessor::setBusArrangements (Vst::SpeakerArrangement* i
 tresult PLUGIN_API PlugProcessor::setupProcessing (Vst::ProcessSetup& setup)
 {
 	if (setup.symbolicSampleSize == Vst::kSample64)
+	{
 		processAudioPtr = &PlugProcessor::processAudio<double>;
+	}
 	else
+	{
 		processAudioPtr = &PlugProcessor::processAudio<float>;
-
+	}
+	initStruct ();	
 	return AudioEffect::setupProcessing (setup);
+}
+
+//-----------------------------------------------------------------------------
+void PlugProcessor::initStruct (void)
+{
+	char m = 1;
+	if (x.isStereo)
+	m = 2;
+
+	x_ramchpositive = new t_sample[PULQUI_SCAN_SIZE * m];
+	//x_ramchpositive = (t_sample*)calloc(PULQUI_SCAN_SIZE * m, sizeof(t_sample));
+	/*
+	x.x_ramchnegative = new t_sample[PULQUI_SCAN_SIZE * m];
+	x.x_ramch = new t_sample[PULQUI_SIZE * m];
+	x.x_bufsignal = new t_sample[PULQUI_SIZE * m];
+	x.x_bufsignalout = new t_sample[PULQUI_SIZE * m];
+	x.x_bufpulqui = new t_sample[PULQUI_SIZE * m];
+*/
+	//printf("LUCARDA size of ram: %d and defined: %d\n", sizeof(x.x_ramchpositive), PULQUI_SCAN_SIZE);
+	printf("LUCARDA size of ram: %d and defined: %d\n", sizeof(x_ramchpositive), PULQUI_SCAN_SIZE * m);
+
+
+}
+
+//------------------------------------------------------------------------
+tresult PLUGIN_API PlugProcessor::terminate ()
+{
+/*
+	if (x.x_ramchpositive) delete [] x.x_ramchpositive;
+	if (x.x_ramchnegative) delete [] x.x_ramchnegative;
+	if (x.x_ramch) delete [] x.x_ramch;
+	if (x.x_bufsignal) delete [] x.x_bufsignal;
+	if (x.x_bufsignalout) delete [] x.x_bufsignalout;
+	if (x.x_bufpulqui) delete [] x.x_bufpulqui;
+	x.x_ramchpositive = x.x_ramchnegative = x.x_ramch = x.x_bufsignal = x.x_bufsignalout = x.x_bufpulqui = nullptr;
+*/
+	return AudioEffect::terminate ();
 }
 
 //-----------------------------------------------------------------------------
@@ -207,9 +297,10 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
 	data.outputs->silenceFlags = data.inputs->silenceFlags ? 0x7FFFF : 0;
 	if (data.inputs->silenceFlags)
 	{
-		memset (currentOutputBuffers[0], 0, sampleFramesSize);
-		memset (currentOutputBuffers[1], 0, sampleFramesSize);
-
+		for (int32 i = 0; i < data.numOutputs; i++)
+		{
+			memset (currentOutputBuffers[i], 0, sampleFramesSize);
+		}
 		return kResultOk;
 	}
 
@@ -221,16 +312,29 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
 		getStereoPanCoef (kPanLawEqualPower, mThreshValue, leftPan, rightPan);
 
 	//---pan : 1 -> 2---------------------
-	SampleType tmp;
-	SampleType* inputMono = currentInputBuffers[0];
-	SampleType* outputLeft = currentOutputBuffers[0];
-	SampleType* outputRight = currentOutputBuffers[1];
+	/*
+	//SampleType tmp;
+	if (data.numOutputs == 1)
+	{
+		SampleType* input1 = currentInputBuffers[0];
+		SampleType* output1 = currentOutputBuffers[0];
+	}
+	else
+	{
+	*/
+		SampleType* input1 = currentInputBuffers[0];
+		SampleType* input2 = currentInputBuffers[1];
+		SampleType* output1 = currentOutputBuffers[0];
+		SampleType* output2 = currentOutputBuffers[1];
+	//}
+	
+
 
 	for (int32 n = 0; n < numFrames; n++)
 	{
-		tmp = inputMono[n];
-		outputLeft[n] = tmp * leftPan;
-		outputRight[n] = tmp * rightPan;
+		output1[n] = mThreshValue * input1[n];
+		if(data.inputs[0].numChannels == 2)
+		output2[n] = mThreshValue * input2[n];
 	}
 
 	//----------------
