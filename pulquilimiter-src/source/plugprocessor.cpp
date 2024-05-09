@@ -108,7 +108,7 @@ tresult PLUGIN_API PlugProcessor::setBusArrangements (Vst::SpeakerArrangement* i
 					getAudioOutput (0)->setArrangement (outputs[0]);
 					getAudioOutput (0)->setName (STR16 ("Mono Out"));
 				}
-				x.isStereo = 0;
+				mIsStereo = false;
 				return kResultOk;
 			}
 		}
@@ -140,7 +140,7 @@ tresult PLUGIN_API PlugProcessor::setBusArrangements (Vst::SpeakerArrangement* i
 					getAudioOutput (0)->setName (STR16 ("Stereo Out"));
 					result = kResultFalse;
 				}
-				x.isStereo = 1;
+				mIsStereo = true;
 				return result;
 			}
 		}
@@ -169,7 +169,8 @@ tresult PLUGIN_API PlugProcessor::setupProcessing (Vst::ProcessSetup& setup)
 //------------------------------------------------------------------------
 tresult PLUGIN_API PlugProcessor::terminate ()
 {
-
+	//delete ch1;
+	//delete ch2;
 	return AudioEffect::terminate ();
 }
 
@@ -285,30 +286,34 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
 		getStereoPanCoef (kPanLawEqualPower, mThreshValue, leftPan, rightPan);
 
 	//---pan : 1 -> 2---------------------
-	/*
-	//SampleType tmp;
-	if (data.numOutputs == 1)
-	{
-		SampleType* input1 = currentInputBuffers[0];
-		SampleType* output1 = currentOutputBuffers[0];
-	}
-	else
-	{
-	*/
-		SampleType* input1 = currentInputBuffers[0];
-		SampleType* input2 = currentInputBuffers[1];
-		SampleType* output1 = currentOutputBuffers[0];
-		SampleType* output2 = currentOutputBuffers[1];
-	//}
+
+	SampleType* input1 = currentInputBuffers[0];
+	SampleType* input2 = currentInputBuffers[1];
+	SampleType* output1 = currentOutputBuffers[0];
+	SampleType* output2 = currentOutputBuffers[1];
+
 	
 
 
 	for (int32 n = 0; n < numFrames; n++)
 	{
-		output1[n] = mThreshValue * input1[n];
-		if(data.inputs[0].numChannels == 2)
-		output2[n] = mThreshValue * input2[n];
+
+		ch1->x_input[n] = input1[n];
+		if(mIsStereo)
+			ch2->x_input[n] = input2[n];
 	}
+
+	pulqui(ch1, numFrames);
+	if(mIsStereo)
+		pulqui(ch2, numFrames);
+
+	for (int32 n = 0; n < numFrames; n++)
+	{
+		output1[n] = ch1->x_output[n];
+		if(mIsStereo)
+			output2[n] = ch2->x_output[n];
+	}
+
 
 	//----------------
 

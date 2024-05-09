@@ -93,32 +93,27 @@ protected:
 	double fsamplrateOld;
 	bool mLatencyBypass = false;
 	bool mMakeUp = false;
+	bool mIsStereo = false;
 
-	struct Pulqui{
-		t_sample x_thresh;
-		//const float* input;
-		//float*       output;
-		int x_scanlen, x_len, x_pulquiblock;
-		//const float* x_makeup; 
-		//const float* x_bypass;
-		//float* report_latency;
-		char isStereo;
-	};	
-	Pulqui x;
 	
 	struct Buffer{
-		t_sample x_ramchpositive[PULQUI_SCAN_SIZE];
-		t_sample x_ramchnegative[PULQUI_SCAN_SIZE];
-		t_sample x_ramch[PULQUI_SIZE];
-		t_sample x_bufsignal[PULQUI_SIZE];
-		t_sample x_bufsignalout[PULQUI_SIZE];
-		t_sample x_bufpulqui[PULQUI_SIZE];
+		double x_ramchpositive[PULQUI_SCAN_SIZE];
+		double x_ramchnegative[PULQUI_SCAN_SIZE];
+		double x_ramch[PULQUI_SIZE];
+		double x_bufsignal[PULQUI_SIZE];
+		double x_bufsignalout[PULQUI_SIZE];
+		double x_bufpulqui[PULQUI_SIZE];
+		double x_input[PULQUI_SCAN_SIZE]; 
+		double x_output[PULQUI_SCAN_SIZE];
+		int x_pulquiblock;
 	};	
-	Buffer *ch1, *ch2;
+	Buffer *ch1 = new Buffer();
+	Buffer *ch2 = new Buffer();
 	
 	void pq_bee32(Buffer* self);
 	void pq_bee32_negative(Buffer* self);
-	void pulqui_tilde_do_pulqui(Buffer* self);	
+	void pulqui_tilde_do_pulqui(Buffer* self);
+	void pulqui(Buffer* self, int32 nSamples);
 
 	/*
 	template <typename SampleType>

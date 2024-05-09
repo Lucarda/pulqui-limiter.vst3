@@ -8,7 +8,7 @@ void PlugProcessor::pq_bee32(Buffer* self)
     int pos;
     int startpos;
     int endpos;
-    t_sample peakIEEE;
+    double peakIEEE;
     startpos = 0;
     endpos = 0;
     pos = 0;
@@ -40,7 +40,7 @@ void PlugProcessor::pq_bee32_negative(Buffer* self)
     int pos;
     int startpos;
     int endpos;
-    t_sample peakIEEE;
+    double peakIEEE;
     startpos = 0;
     endpos = 0;
     pos = 0;
@@ -106,6 +106,43 @@ void PlugProcessor::pulqui_tilde_do_pulqui(Buffer* self)
     {
         self->x_bufsignal[i] = self->x_ramch[i];
     }
+}
+
+
+void PlugProcessor::pulqui(Buffer* self, int32 nSamples)
+{
+	int n_samples = (int)nSamples;
+	double thresh = mThreshValue;
+	double f;
+	
+	for (int i = 0; i < n_samples; i++)
+    {
+        self->x_ramch[i + self->x_pulquiblock] = self->x_input[i];
+        if(mBypass)
+        {
+            self->x_output[i] = self->x_bufsignalout[i + self->x_pulquiblock];
+        }
+        else
+        {
+            if (self->x_bufpulqui[i + self->x_pulquiblock] > \
+            thresh)
+                f = self->x_bufsignalout[i + self->x_pulquiblock]*\
+                (thresh / self->x_bufpulqui[i + self->x_pulquiblock]);
+            else 
+                f = self->x_bufsignalout[i + self->x_pulquiblock];
+            if (mMakeUp)
+                self->x_output[i] = f*(0.998/thresh);
+            else
+            self->x_output[i] = f;
+        }
+    }
+
+    if(self->x_pulquiblock > ((PULQUI_SIZE - n_samples) - 1))
+    {
+        pulqui_tilde_do_pulqui(self);
+        self->x_pulquiblock = 0;
+    }
+    else self->x_pulquiblock += n_samples;
 }
 
 } // namespace
