@@ -71,9 +71,7 @@ public:
 	tresult PLUGIN_API getState (IBStream* state) SMTG_OVERRIDE;
 
 	static FUnknown* createInstance (void*) { return (Vst::IAudioProcessor*)new PlugProcessor (); }
-	
-	void initStruct (void);
-	void deinitStruct (void);
+
 
 	enum
 	{
@@ -88,6 +86,7 @@ protected:
 	tresult processAudio (Vst::ProcessData& data);
 	
 	tresult (PlugProcessor::*processAudioPtr) (Vst::ProcessData& data);
+	
 		
 	Vst::ParamValue mThreshValue = 0.5;
 	bool mBypass = false;
@@ -99,21 +98,27 @@ protected:
 		t_sample x_thresh;
 		//const float* input;
 		//float*       output;
-		t_sample *x_ramchpositive;
-		t_sample *x_ramchnegative;
-		t_sample *x_ramch;
-		t_sample *x_bufsignal;
-		t_sample *x_bufsignalout;
-		t_sample *x_bufpulqui;
 		int x_scanlen, x_len, x_pulquiblock;
 		//const float* x_makeup; 
 		//const float* x_bypass;
 		//float* report_latency;
 		char isStereo;
-	};
-	
+	};	
 	Pulqui x;
 	
+	struct Buffer{
+		t_sample x_ramchpositive[PULQUI_SCAN_SIZE];
+		t_sample x_ramchnegative[PULQUI_SCAN_SIZE];
+		t_sample x_ramch[PULQUI_SIZE];
+		t_sample x_bufsignal[PULQUI_SIZE];
+		t_sample x_bufsignalout[PULQUI_SIZE];
+		t_sample x_bufpulqui[PULQUI_SIZE];
+	};	
+	Buffer *ch1, *ch2;
+	
+	void pq_bee32(Buffer* self);
+	void pq_bee32_negative(Buffer* self);
+	void pulqui_tilde_do_pulqui(Buffer* self);	
 
 	/*
 	template <typename SampleType>

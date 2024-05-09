@@ -18,6 +18,7 @@ smtg_add_vst3plugin(PulquiLimiter
     source/plugfactory.cpp
     source/plugcontroller.cpp
     source/plugprocessor.cpp
+    source/pulqui.cpp
     resource/plug.uidesc
 )
 
