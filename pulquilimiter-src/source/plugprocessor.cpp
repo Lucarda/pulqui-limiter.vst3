@@ -75,6 +75,15 @@ tresult PLUGIN_API PlugProcessor::initialize (FUnknown* context)
 	addAudioInput (STR16 ("Stereo In"), SpeakerArr::kStereo);
 	addAudioOutput (STR16 ("Stereo Out"), SpeakerArr::kStereo);
 
+	//--create initial vars. this needs to be done here or there's a segfault on terminate().
+	x.x_ramchpositive = new t_sample[1];
+	x.x_ramchnegative = new t_sample[1];
+	x.x_ramch = new t_sample[1];
+	x.x_bufsignal = new t_sample[1];
+	x.x_bufsignalout = new t_sample[1];
+	x.x_bufpulqui = new t_sample[1];
+	
+	
 	return kResultTrue;
 }
 
@@ -169,34 +178,34 @@ void PlugProcessor::initStruct (void)
 	char m = 1;
 	if (x.isStereo)
 	m = 2;
-
-	x_ramchpositive = new t_sample[PULQUI_SCAN_SIZE * m];
-	//x_ramchpositive = (t_sample*)calloc(PULQUI_SCAN_SIZE * m, sizeof(t_sample));
-	/*
+	deinitStruct();
+	x.x_ramchpositive = new t_sample[PULQUI_SCAN_SIZE * m];
 	x.x_ramchnegative = new t_sample[PULQUI_SCAN_SIZE * m];
 	x.x_ramch = new t_sample[PULQUI_SIZE * m];
 	x.x_bufsignal = new t_sample[PULQUI_SIZE * m];
 	x.x_bufsignalout = new t_sample[PULQUI_SIZE * m];
 	x.x_bufpulqui = new t_sample[PULQUI_SIZE * m];
-*/
-	//printf("LUCARDA size of ram: %d and defined: %d\n", sizeof(x.x_ramchpositive), PULQUI_SCAN_SIZE);
-	printf("LUCARDA size of ram: %d and defined: %d\n", sizeof(x_ramchpositive), PULQUI_SCAN_SIZE * m);
-
 
 }
 
-//------------------------------------------------------------------------
-tresult PLUGIN_API PlugProcessor::terminate ()
+//-----------------------------------------------------------------------------
+void PlugProcessor::deinitStruct (void)
 {
-/*
 	if (x.x_ramchpositive) delete [] x.x_ramchpositive;
 	if (x.x_ramchnegative) delete [] x.x_ramchnegative;
 	if (x.x_ramch) delete [] x.x_ramch;
 	if (x.x_bufsignal) delete [] x.x_bufsignal;
 	if (x.x_bufsignalout) delete [] x.x_bufsignalout;
 	if (x.x_bufpulqui) delete [] x.x_bufpulqui;
-	x.x_ramchpositive = x.x_ramchnegative = x.x_ramch = x.x_bufsignal = x.x_bufsignalout = x.x_bufpulqui = nullptr;
-*/
+}
+//------------------------------------------------------------------------
+tresult PLUGIN_API PlugProcessor::terminate ()
+{
+
+	deinitStruct();
+	x.x_ramchpositive = x.x_ramchnegative = x.x_ramch = x.x_bufsignal =\
+							x.x_bufsignalout = x.x_bufpulqui = nullptr;
+
 	return AudioEffect::terminate ();
 }
 

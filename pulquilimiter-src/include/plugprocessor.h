@@ -73,6 +73,7 @@ public:
 	static FUnknown* createInstance (void*) { return (Vst::IAudioProcessor*)new PlugProcessor (); }
 	
 	void initStruct (void);
+	void deinitStruct (void);
 
 	enum
 	{
@@ -93,26 +94,6 @@ protected:
 	double fsamplrateOld;
 	bool mLatencyBypass = false;
 	bool mMakeUp = false;
-	
-	t_sample* x_ramchpositive;
-/*	
-	struct Pulqui{
-		t_sample x_thresh;
-		//const float* input;
-		//float*       output;
-		t_sample *x_ramchpositive[PULQUI_SCAN_SIZE * 2];
-		t_sample *x_ramchnegative[PULQUI_SCAN_SIZE * 2];
-		t_sample *x_ramch[PULQUI_SIZE * 2];
-		t_sample *x_bufsignal[PULQUI_SIZE * 2];
-		t_sample *x_bufsignalout[PULQUI_SIZE * 2];
-		t_sample *x_bufpulqui[PULQUI_SIZE * 2];
-		int x_scanlen, x_len, x_pulquiblock;
-		//const float* x_makeup; 
-		//const float* x_bypass;
-		//float* report_latency;
-		char isStereo;
-	};
-*/	
 
 	struct Pulqui{
 		t_sample x_thresh;
