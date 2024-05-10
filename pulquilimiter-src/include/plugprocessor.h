@@ -45,7 +45,6 @@ namespace Vst{
 	
 #define PULQUI_SIZE 4096
 #define PULQUI_SCAN_SIZE 8192
-#define t_sample float
 
 //-----------------------------------------------------------------------------
 class PlugProcessor : public Vst::AudioEffect
@@ -71,16 +70,9 @@ public:
 	tresult PLUGIN_API getState (IBStream* state) SMTG_OVERRIDE;
 
 	static FUnknown* createInstance (void*) { return (Vst::IAudioProcessor*)new PlugProcessor (); }
-
-
-	enum
-	{
-		kPanLawEqualPower = 0,
-	};
 		
 
 protected:
-	void getStereoPanCoef (int32 panType, float pan, float& left, float& right) const;
 	
 	template <typename SampleType>
 	tresult processAudio (Vst::ProcessData& data);
@@ -115,13 +107,6 @@ protected:
 	void pulqui_tilde_do_pulqui(Buffer* self);
 	void pulqui(Buffer* self, int32 nSamples);
 
-	/*
-	template <typename SampleType>
-	SampleType* input1;
-	SampleType* input2;
-	SampleType* output1;
-	SampleType* output2;
-	*/
 };
 
 //------------------------------------------------------------------------

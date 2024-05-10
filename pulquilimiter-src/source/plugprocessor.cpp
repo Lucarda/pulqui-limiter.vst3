@@ -50,8 +50,6 @@ namespace Vst{
 #define kPI 3.14159265358979323846
 #endif
 
-#define kRampingTimeMs 10.0 // in ms
-
 //-----------------------------------------------------------------------------
 PlugProcessor::PlugProcessor ()
 {
@@ -90,7 +88,7 @@ tresult PLUGIN_API PlugProcessor::canProcessSampleSize (int32 symbolicSampleSize
 tresult PLUGIN_API PlugProcessor::setBusArrangements (Vst::SpeakerArrangement* inputs, int32 numIns,
                                                       Vst::SpeakerArrangement* outputs,
                                                       int32 numOuts)
-{
+{	
 	if (numIns == 1 && numOuts == 1)
 	{
 		// the host wants Mono => Mono (or 1 channel -> 1 channel)
@@ -278,26 +276,16 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
 		return kResultOk;
 	}
 
-	float leftPan;
-	float rightPan;
-	if (mBypass)
-		getStereoPanCoef (kPanLawEqualPower, 0.f, leftPan, rightPan);
-	else
-		getStereoPanCoef (kPanLawEqualPower, mThreshValue, leftPan, rightPan);
-
-	//---pan : 1 -> 2---------------------
+	//---pulqui---------------------
 
 	SampleType* input1 = currentInputBuffers[0];
 	SampleType* input2 = currentInputBuffers[1];
 	SampleType* output1 = currentOutputBuffers[0];
 	SampleType* output2 = currentOutputBuffers[1];
 
-	
-
 
 	for (int32 n = 0; n < numFrames; n++)
 	{
-
 		ch1->x_input[n] = input1[n];
 		if(mIsStereo)
 			ch2->x_input[n] = input2[n];
@@ -336,22 +324,6 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
 
 
 	return kResultOk;
-}
-
-//------------------------------------------------------------------------
-void PlugProcessor::getStereoPanCoef (int32 panType, float pan, float& left, float& right) const
-{
-	if (panType == kPanLawEqualPower)
-	{
-		pan = pan * kPI * 0.5f;
-		left = cosf (pan);
-		right = sinf (pan);
-	}
-	else
-	{
-		left = 0.5f;
-		right = 0.5f;
-	}
 }
 
 //------------------------------------------------------------------------
