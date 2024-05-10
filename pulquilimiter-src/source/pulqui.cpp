@@ -118,7 +118,7 @@ void PlugProcessor::pulqui(Buffer* self, int32 nSamples)
 	for (int i = 0; i < n_samples; i++)
     {
         self->x_ramch[i + self->x_pulquiblock] = self->x_input[i];
-        if(mBypass)
+        if(mLatencyBypass)
         {
             self->x_output[i] = self->x_bufsignalout[i + self->x_pulquiblock];
         }
