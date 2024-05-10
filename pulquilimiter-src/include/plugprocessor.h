@@ -39,7 +39,6 @@
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
 
-
 namespace Steinberg {
 namespace Vst{
 	
@@ -62,8 +61,8 @@ public:
 	tresult PLUGIN_API setupProcessing (Vst::ProcessSetup& setup) SMTG_OVERRIDE;
 	tresult PLUGIN_API setActive (TBool state) SMTG_OVERRIDE;
 	tresult PLUGIN_API process (Vst::ProcessData& data) SMTG_OVERRIDE;
-		/** Called at the end before destructor */
 	tresult PLUGIN_API terminate () SMTG_OVERRIDE;
+	uint32 PLUGIN_API getLatencySamples () SMTG_OVERRIDE { return 8192; }
 
 //------------------------------------------------------------------------
 	tresult PLUGIN_API setState (IBStream* state) SMTG_OVERRIDE;
@@ -72,13 +71,13 @@ public:
 	static FUnknown* createInstance (void*) { return (Vst::IAudioProcessor*)new PlugProcessor (); }
 		
 
+
 protected:
 	
 	template <typename SampleType>
 	tresult processAudio (Vst::ProcessData& data);
 	
 	tresult (PlugProcessor::*processAudioPtr) (Vst::ProcessData& data);
-	
 		
 	Vst::ParamValue mThreshValue = 0.5;
 	bool mBypass = false;

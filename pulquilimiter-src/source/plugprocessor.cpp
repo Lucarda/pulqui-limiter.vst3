@@ -146,6 +146,7 @@ tresult PLUGIN_API PlugProcessor::setBusArrangements (Vst::SpeakerArrangement* i
 	return kResultFalse;
 }
 
+
 //-----------------------------------------------------------------------------
 tresult PLUGIN_API PlugProcessor::setupProcessing (Vst::ProcessSetup& setup)
 {
@@ -157,6 +158,7 @@ tresult PLUGIN_API PlugProcessor::setupProcessing (Vst::ProcessSetup& setup)
 	{
 		processAudioPtr = &PlugProcessor::processAudio<float>;
 	}
+
 
 	return AudioEffect::setupProcessing (setup);
 }
