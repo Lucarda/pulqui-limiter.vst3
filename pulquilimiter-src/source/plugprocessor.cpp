@@ -72,7 +72,7 @@ tresult PLUGIN_API PlugProcessor::initialize (FUnknown* context)
 	// we want a stereo Input and a Stereo Output
 	addAudioInput (STR16 ("Stereo In"), SpeakerArr::kStereo);
 	addAudioOutput (STR16 ("Stereo Out"), SpeakerArr::kStereo);
-	
+
 	return kResultTrue;
 }
 
@@ -163,8 +163,12 @@ tresult PLUGIN_API PlugProcessor::setupProcessing (Vst::ProcessSetup& setup)
 	return AudioEffect::setupProcessing (setup);
 }
 
-
-
+//------------------------------------------------------------------------
+PlugProcessor::~PlugProcessor()
+{
+	delete ch1;
+	delete ch2;
+}
 
 //------------------------------------------------------------------------
 tresult PLUGIN_API PlugProcessor::terminate ()

@@ -69,7 +69,7 @@ public:
 	tresult PLUGIN_API getState (IBStream* state) SMTG_OVERRIDE;
 
 	static FUnknown* createInstance (void*) { return (Vst::IAudioProcessor*)new PlugProcessor (); }
-		
+	~PlugProcessor ();	
 
 
 protected:
@@ -107,6 +107,8 @@ protected:
 	void pulqui(Buffer* self, int32 nSamples);
 
 };
+
+
 
 //------------------------------------------------------------------------
 } // namespace PulquiLimiter
