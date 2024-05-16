@@ -69,7 +69,9 @@ public:
 	tresult PLUGIN_API getState (IBStream* state) SMTG_OVERRIDE;
 
 	static FUnknown* createInstance (void*) { return (Vst::IAudioProcessor*)new PlugProcessor (); }
-	~PlugProcessor ();	
+	~PlugProcessor ();
+	
+	
 
 
 protected:
@@ -78,14 +80,6 @@ protected:
 	tresult processAudio (Vst::ProcessData& data);
 	
 	tresult (PlugProcessor::*processAudioPtr) (Vst::ProcessData& data);
-		
-	Vst::ParamValue mThreshValue = 0.5;
-	bool mBypass = false;
-	double fsamplrateOld;
-	bool mLatencyBypass = false;
-	bool mMakeUp = false;
-	bool mIsStereo = false;
-
 	
 	struct Buffer{
 		double x_ramchpositive[PULQUI_SCAN_SIZE];
@@ -98,8 +92,18 @@ protected:
 		double x_output[PULQUI_SCAN_SIZE];
 		int x_pulquiblock;
 	};	
-	Buffer *ch1 = new Buffer();
-	Buffer *ch2 = new Buffer();
+	Buffer *ch1 = NULL;
+	Buffer *ch2 = NULL;
+		
+	Vst::ParamValue mThreshValue = 0.5;
+	bool mBypass = false;
+	double fsamplrateOld;
+	bool mLatencyBypass = false;
+	bool mMakeUp = false;
+	bool mIsStereo = false;
+
+	
+
 	
 	void pq_bee32(Buffer* self);
 	void pq_bee32_negative(Buffer* self);

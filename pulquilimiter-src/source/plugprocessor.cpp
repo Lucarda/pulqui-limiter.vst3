@@ -158,7 +158,13 @@ tresult PLUGIN_API PlugProcessor::setupProcessing (Vst::ProcessSetup& setup)
 	{
 		processAudioPtr = &PlugProcessor::processAudio<float>;
 	}
-
+	printf("LUCARDA -- isstereo %d\n", mIsStereo);
+	//delete ch1;
+	
+	if(!ch1)
+		ch1 = new Buffer();
+	if(mIsStereo && !ch2) 
+		ch2 = new Buffer();
 
 	return AudioEffect::setupProcessing (setup);
 }
@@ -166,15 +172,24 @@ tresult PLUGIN_API PlugProcessor::setupProcessing (Vst::ProcessSetup& setup)
 //------------------------------------------------------------------------
 PlugProcessor::~PlugProcessor()
 {
-	delete ch1;
-	delete ch2;
+	//delete ch1;
+	//delete ch2;
 }
 
 //------------------------------------------------------------------------
 tresult PLUGIN_API PlugProcessor::terminate ()
 {
-	//delete ch1;
-	//delete ch2;
+	if(ch1) 
+	{
+		delete ch1;
+		ch1 = NULL;
+	}
+	if(ch2 && mIsStereo) 
+	{
+		delete ch2;
+		ch2 = NULL;
+	}
+	printf("LUCARDA -- terminate called\n");
 	return AudioEffect::terminate ();
 }
 
