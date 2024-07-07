@@ -69,7 +69,8 @@ tresult PLUGIN_API PlugProcessor::initialize (FUnknown* context)
 		return kResultFalse;
 
 	//---create Audio In/Out busses------
-	// we want a stereo Input and a Stereo Output
+    // better to create them as mono but we got into troubles with some hosts.
+    // also remember to change "bool mIsStereo = true" in the header.
 	addAudioInput (STR16 ("Stereo In"), SpeakerArr::kStereo);
 	addAudioOutput (STR16 ("Stereo Out"), SpeakerArr::kStereo);
 
@@ -89,6 +90,7 @@ tresult PLUGIN_API PlugProcessor::setBusArrangements (Vst::SpeakerArrangement* i
                                                       Vst::SpeakerArrangement* outputs,
                                                       int32 numOuts)
 {	
+
 	if (numIns == 1 && numOuts == 1)
 	{
 		// the host wants Mono => Mono (or 1 channel -> 1 channel)
@@ -101,17 +103,20 @@ tresult PLUGIN_API PlugProcessor::setBusArrangements (Vst::SpeakerArrangement* i
 				// check if we are Mono => Mono, if not we need to recreate the busses
 				if (bus->getArrangement () != inputs[0])
 				{
-					getAudioInput (0)->setArrangement (inputs[0]);
-					getAudioInput (0)->setName (STR16 ("Mono In"));
-					getAudioOutput (0)->setArrangement (outputs[0]);
-					getAudioOutput (0)->setName (STR16 ("Mono Out"));
+					bus->setArrangement (inputs[0]);
+					bus->setName (STR16 ("Mono In"));
+					if (auto* busOut = FCast<AudioBus> (audioOutputs.at (0)))
+					{
+						busOut->setArrangement (outputs[0]);
+						busOut->setName (STR16 ("Mono Out"));
+					}
 				}
 				mIsStereo = false;
 				return kResultOk;
 			}
 		}
-		// the host wants something else than Mono => Mono,
-		// in this case we are always Stereo => Stereo
+		// the host wants something else than Mono => Mono, in this case we are always Stereo =>
+		// Stereo
 		else
 		{
 			auto* bus = FCast<AudioBus> (audioInputs.at (0));
@@ -123,19 +128,26 @@ tresult PLUGIN_API PlugProcessor::setBusArrangements (Vst::SpeakerArrangement* i
 				if (SpeakerArr::getChannelCount (inputs[0]) == 2 &&
 				    SpeakerArr::getChannelCount (outputs[0]) == 2)
 				{
-					getAudioInput (0)->setArrangement (inputs[0]);
-					getAudioInput (0)->setName (STR16 ("Stereo In"));
-					getAudioOutput (0)->setArrangement (outputs[0]);
-					getAudioOutput (0)->setName (STR16 ("Stereo Out"));
+					bus->setArrangement (inputs[0]);
+					bus->setName (STR16 ("Stereo In"));
+					if (auto* busOut = FCast<AudioBus> (audioOutputs.at (0)))
+					{
+						busOut->setArrangement (outputs[0]);
+						busOut->setName (STR16 ("Stereo Out"));
+					}
 					result = kResultTrue;
 				}
 				// the host want something different than 1->1 or 2->2 : in this case we want stereo
 				else if (bus->getArrangement () != SpeakerArr::kStereo)
 				{
-					getAudioInput (0)->setArrangement (SpeakerArr::kStereo);
-					getAudioInput (0)->setName (STR16 ("Stereo In"));
-					getAudioOutput (0)->setArrangement (SpeakerArr::kStereo);
-					getAudioOutput (0)->setName (STR16 ("Stereo Out"));
+					bus->setArrangement (SpeakerArr::kStereo);
+					bus->setName (STR16 ("Stereo In"));
+					if (auto* busOut = FCast<AudioBus> (audioOutputs.at (0)))
+					{
+						busOut->setArrangement (SpeakerArr::kStereo);
+						busOut->setName (STR16 ("Stereo Out"));
+					}
+
 					result = kResultFalse;
 				}
 				mIsStereo = true;
@@ -158,8 +170,6 @@ tresult PLUGIN_API PlugProcessor::setupProcessing (Vst::ProcessSetup& setup)
 	{
 		processAudioPtr = &PlugProcessor::processAudio<float>;
 	}
-	printf("LUCARDA -- isstereo %d\n", mIsStereo);
-	//delete ch1;
 	
 	if(!ch1)
 		ch1 = new Buffer();

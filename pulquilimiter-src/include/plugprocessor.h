@@ -100,7 +100,7 @@ protected:
 	double fsamplrateOld;
 	bool mLatencyBypass = false;
 	bool mMakeUp = false;
-	bool mIsStereo = false;
+	bool mIsStereo = true;
 
 	
 
