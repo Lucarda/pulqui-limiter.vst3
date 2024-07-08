@@ -1,0 +1,4 @@
+Changelog for pulqui-limiter.vst3
+
+v0.1.0, dated 08-07-2024
+- First public version.
