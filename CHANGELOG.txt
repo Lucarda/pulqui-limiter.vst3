@@ -1,4 +1,7 @@
 Changelog for pulqui-limiter.vst3
 
+v0.1.1, dated 30-09-2024
+- Fix silence stuff that incorrectly resumes previous buffer on playback.
+
 v0.1.0, dated 08-07-2024
 - First public version.
