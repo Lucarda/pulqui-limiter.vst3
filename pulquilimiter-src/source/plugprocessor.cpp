@@ -296,6 +296,8 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
 	auto** currentOutputBuffers =
 	    (SampleType**)Vst::getChannelBuffersPointer (processSetup, data.outputs[0]);
 
+	// skip this
+	/*
 	// if we have only silence clear the output and do nothing.
 	data.outputs->silenceFlags = data.inputs->silenceFlags ? 0x7FFFF : 0;
 	if (data.inputs->silenceFlags)
@@ -306,6 +308,7 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
 		}
 		return kResultOk;
 	}
+	*/
 
 	//---pulqui---------------------
 

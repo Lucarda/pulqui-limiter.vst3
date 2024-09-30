@@ -32,7 +32,7 @@ jobs:
       run: ${{github.workspace}}/.github/scripts/package.sh Ubuntu-x64
 
     - name: Archive Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Pulquilimiter-Ubuntu
         path: ${{github.workspace}}/build/VST3/Release/Pulquilimiter-Ubuntu-x64.zip
@@ -70,7 +70,7 @@ jobs:
       run: ${{github.workspace}}/.github/scripts/package.sh MacOS-Universal
 
     - name: Archive Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Pulquilimiter-macOS
         path: ${{github.workspace}}/build/VST3/Release/Pulquilimiter-MacOS-Universal.zip
@@ -108,7 +108,7 @@ jobs:
       run: ${{github.workspace}}/.github/scripts/package.bat Win64
 
     - name: Archive Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Pulquilimiter-Windows
         path: ${{github.workspace}}/build/VST3/Release/Pulquilimiter-Win64.zip
