@@ -34,8 +34,8 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-#include "../include/plugcontroller.h"
-#include "../include/plugids.h"
+#include "./plugcontroller.h"
+#include "./plugids.h"
 
 #include "base/source/fstreamer.h"
 #include "public.sdk/source/vst/utility/stringconvert.h"

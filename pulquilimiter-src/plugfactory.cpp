@@ -36,10 +36,10 @@
 
 #include "public.sdk/source/main/pluginfactory.h"
 
-#include "../include/plugcontroller.h"	// for createInstance
-#include "../include/plugprocessor.h"	// for createInstance
-#include "../include/plugids.h"			// for uids
-#include "../include/version.h"			// for version and naming
+#include "./plugcontroller.h"	// for createInstance
+#include "./plugprocessor.h"	// for createInstance
+#include "./plugids.h"			// for uids
+#include "./version.h"			// for version and naming
 
 #define stringSubCategory Vst::PlugType::kFxDynamics // Subcategory for this plug-in (to be changed if needed, see PlugType in ivstaudioprocessor.h)
 

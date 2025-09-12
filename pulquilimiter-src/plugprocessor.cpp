@@ -34,8 +34,8 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-#include "../include/plugprocessor.h"
-#include "../include/plugids.h"
+#include "./plugprocessor.h"
+#include "./plugids.h"
 
 #include "public.sdk/source/vst/vstaudioprocessoralgo.h"
 #include "base/source/fstreamer.h"

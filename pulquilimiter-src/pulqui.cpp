@@ -1,4 +1,4 @@
-#include "../include/plugprocessor.h"
+#include "./plugprocessor.h"
 
 namespace Steinberg {
 namespace Vst{
