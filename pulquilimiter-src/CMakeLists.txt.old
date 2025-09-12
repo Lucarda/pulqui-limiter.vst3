@@ -1,21 +1,26 @@
+cmake_minimum_required(VERSION 3.14.0)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "")
+set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
+
 project(PulquiLimiter
     VERSION 1.0.0.0
     DESCRIPTION "PulquiLimiter VST3 Plug-in"
 )
 
+add_subdirectory(external)
 
 smtg_enable_vst3_sdk()
 
 smtg_add_vst3plugin(PulquiLimiter
-    plugcontroller.h
-    plugids.h
-    plugprocessor.h
-    version.h
-    plugfactory.cpp
-    plugcontroller.cpp
-    plugprocessor.cpp
-    pulqui.cpp
-    plug.uidesc
+    include/plugcontroller.h
+    include/plugids.h
+    include/plugprocessor.h
+    include/version.h
+    source/plugfactory.cpp
+    source/plugcontroller.cpp
+    source/plugprocessor.cpp
+    source/pulqui.cpp
+    resource/plug.uidesc
 )
 
 target_link_libraries(PulquiLimiter
@@ -26,7 +31,7 @@ target_link_libraries(PulquiLimiter
 
 smtg_target_add_plugin_resources(PulquiLimiter
     RESOURCES
-        plug.uidesc
+        resource/plug.uidesc
 )
 
 smtg_target_add_plugin_snapshots (PulquiLimiter
