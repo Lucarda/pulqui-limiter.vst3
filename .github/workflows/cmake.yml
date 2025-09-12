@@ -5,13 +5,15 @@ on: [push]
 
 jobs:
   ubuntu-latest-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+    - name: Checkout submodules
+      run: git submodule update --init --recursive
 
     - name: Install Dependencies
-      run: sudo apt -qq update && sudo apt install -y gcc "libstdc++6" libx11-xcb-dev libxcb-util-dev libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev libxcb-keysyms1-dev
+      run: sudo apt-get install cmake gcc "libstdc++6" libx11-xcb-dev libxcb-util-dev libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev libxcb-keysyms1-dev
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{github.workspace}}/build
@@ -19,37 +21,26 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{github.workspace}}/build
-      run: cmake ../pulquilimiter-src -DCMAKE_BUILD_TYPE:STRING=Release
+      run: cmake ../ -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_RUN_VST_VALIDATOR=off -DGITHUB-CI=ON
 
     - name: Build
       working-directory: ${{github.workspace}}/build
       shell: bash
-      run: cmake --build .
+      run: make
 
-    - name: Prepare Artefacts
-      working-directory: ${{github.workspace}}/build/VST3/Release
-      shell: bash
-      run: ${{github.workspace}}/.github/scripts/package.sh Ubuntu-x64
-
-    - name: Archive Artifacts
+    - name: Upload Zip
       uses: actions/upload-artifact@v4
       with:
-        name: Pulquilimiter-Ubuntu
-        path: ${{github.workspace}}/build/VST3/Release/Pulquilimiter-Ubuntu-x64.zip
-        
-    - name: Release Artifacts
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        prerelease: true
-        draft: true
-        files: Pulquilimiter-Ubuntu-x64.zip
+        name: PulquiLimiter-Linux-x64
+        path: ${{github.workspace}}/build/VST3/release/*
 
   macos-universal-build:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+    - name: Checkout submodules
+      run: git submodule update --init --recursive
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{github.workspace}}/build
@@ -57,66 +48,42 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{github.workspace}}/build
-      run: cmake ../pulquilimiter-src -DCMAKE_BUILD_TYPE:STRING=Release
-
-    - name: Build
-      working-directory: ${{github.workspace}}/build
-      shell: bash
-      run: cmake --build .
-
-    - name: Prepare Artefacts
-      working-directory: ${{github.workspace}}/build/VST3/Release
-      shell: bash
-      run: ${{github.workspace}}/.github/scripts/package.sh MacOS-Universal
-
-    - name: Archive Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: Pulquilimiter-macOS
-        path: ${{github.workspace}}/build/VST3/Release/Pulquilimiter-MacOS-Universal.zip
-        
-    - name: Release Artifacts
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        prerelease: true
-        draft: true
-        files: Pulquilimiter-MacOS-Universal.zip
-
-  windows-64-build:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Create Build Environment
-      run: cmake -E make_directory ${{github.workspace}}/build
-
-    - name: Configure CMake
-      shell: bash
-      working-directory: ${{github.workspace}}/build
-      run: cmake ../pulquilimiter-src -DSMTG_USE_STATIC_CRT:BOOL=ON -DCMAKE_BUILD_TYPE:STRING=Release
+      run: cmake -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_DISABLE_CODE_SIGNING=on -DSMTG_RUN_VST_VALIDATOR=off ../
 
     - name: Build
       working-directory: ${{github.workspace}}/build
       shell: bash
       run: cmake --build . --config Release
 
-    - name: Prepare Artefacts
-      working-directory: ${{github.workspace}}\build\VST3\Release
-      shell: cmd
-      run: ${{github.workspace}}/.github/scripts/package.bat Win64
-
-    - name: Archive Artifacts
+    - name: Upload Zip
       uses: actions/upload-artifact@v4
       with:
-        name: Pulquilimiter-Windows
-        path: ${{github.workspace}}/build/VST3/Release/Pulquilimiter-Win64.zip
-        
-    - name: Release Artifacts
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
+        name: PulquiLimiter-MacOS-x64-arm64
+        path: ${{github.workspace}}/build/VST3/release/*
+
+  windows-64-build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Checkout submodules
+      run: git submodule update --init --recursive
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{github.workspace}}/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{github.workspace}}/build
+      run: cmake ../ -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_USE_STATIC_CRT:BOOL=ON -DSMTG_RUN_VST_VALIDATOR=off -DGITHUB-CI=ON
+
+    - name: Build
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      run: cmake --build . --config Release
+
+    - name: Upload Zip
+      uses: actions/upload-artifact@v4
       with:
-        prerelease: true
-        draft: true
-        files: Pulquilimiter-Win64.zip
+        name: PulquiLimiter-Windows-x64
+        path: ${{github.workspace}}/build/VST3/release/*
