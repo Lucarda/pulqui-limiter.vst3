@@ -6,6 +6,23 @@ option(GITHUB-CI "If we are running the github builds" OFF)
 set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO")
 
+#-------------------------------------------------------------------------------
+# Remove macOS code signing in sources
+#-------------------------------------------------------------------------------
+
+# Define the source and destination paths
+set(SOURCE_FILE "${CMAKE_SOURCE_DIR}/xcodehack.txt")
+set(DESTINATION_DIR "${CMAKE_SOURCE_DIR}/cmake/modules")
+
+# Copy the file
+file(COPY "${SOURCE_FILE}" DESTINATION "${DESTINATION_DIR}")
+
+# Rename old_file.txt to new_file.txt
+file(RENAME "${CMAKE_SOURCE_DIR}/cmake/modules/xcodehack.txt" "${CMAKE_SOURCE_DIR}/cmake/modules/SMTG_AddVST3Library.cmake")
+#-------------------------------------------------------------------------------
+
+
+
 # Specify the minimum version of the target platform
 if(NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
     set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "macOS deployment target")
@@ -23,6 +40,8 @@ option(SMTG_ENABLE_VSTGUI_SUPPORT "Enable VSTGUI Support" ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 
 include(SMTG_VST3_SDK)
+
+
 
 #-------------------------------------------------------------------------------
 # SDK Project
@@ -74,7 +93,7 @@ set(SDK_IDE_UTILITIES_FOLDER FOLDER "Utilities")
 add_subdirectory(public.sdk/samples/vst-utilities)
 
 
-# scheduler
+# build pulqui-limiter
 add_subdirectory(pulquilimiter-src)
 
 
@@ -98,7 +117,7 @@ set_property(
         pluginterfaces
         cmake_modules
         cmake_VST_modules
-    PROPERTY 
+    PROPERTY
         ${SDK_IDE_LIBS_FOLDER}
 )
 
@@ -107,7 +126,7 @@ if(TARGET base_ios)
         TARGET
             base_ios
             pluginterfaces_ios
-        PROPERTY 
+        PROPERTY
             ${SDK_IDE_LIBS_FOLDER}
     )
 endif()
@@ -118,10 +137,10 @@ if(SMTG_ENABLE_VSTGUI_SUPPORT)
             vstgui
             vstgui_support
             vstgui_uidescription
-        PROPERTY 
+        PROPERTY
             ${SDK_IDE_LIBS_FOLDER}
     )
- 
+
     if(TARGET vstgui_standalone)
         set_target_properties(vstgui_standalone
             PROPERTIES
@@ -131,40 +150,40 @@ if(SMTG_ENABLE_VSTGUI_SUPPORT)
 endif()
 
 #-------------------------------------------------------------------------------
-# macOS & iOS collection targets 
+# macOS & iOS collection targets
 #-------------------------------------------------------------------------------
 option(SMTG_VSTSDK_GENERATE_MACOS_IOS_COLLECTION_TARGETS "Create macOS and iOS collection targets" OFF)
 
 if(SMTG_VSTSDK_GENERATE_MACOS_IOS_COLLECTION_TARGETS)
 
-	function(get_all_targets var)
-		set(targets)
-		get_all_targets_recursive(targets ${CMAKE_CURRENT_SOURCE_DIR})
-		set(${var} ${targets} PARENT_SCOPE)
-	endfunction()
+    function(get_all_targets var)
+        set(targets)
+        get_all_targets_recursive(targets ${CMAKE_CURRENT_SOURCE_DIR})
+        set(${var} ${targets} PARENT_SCOPE)
+    endfunction()
 
-	macro(get_all_targets_recursive targets dir)
-		get_property(subdirectories DIRECTORY ${dir} PROPERTY SUBDIRECTORIES)
-		foreach(subdir ${subdirectories})
-			get_all_targets_recursive(${targets} ${subdir})
-		endforeach()
+    macro(get_all_targets_recursive targets dir)
+        get_property(subdirectories DIRECTORY ${dir} PROPERTY SUBDIRECTORIES)
+        foreach(subdir ${subdirectories})
+            get_all_targets_recursive(${targets} ${subdir})
+        endforeach()
 
-		get_property(current_targets DIRECTORY ${dir} PROPERTY BUILDSYSTEM_TARGETS)
-		list(APPEND ${targets} ${current_targets})
-	endmacro()
+        get_property(current_targets DIRECTORY ${dir} PROPERTY BUILDSYSTEM_TARGETS)
+        list(APPEND ${targets} ${current_targets})
+    endmacro()
 
-	get_all_targets(all_targets)
+    get_all_targets(all_targets)
 
-	add_custom_target(iOS_Targets)
-	add_custom_target(macOS_Targets)
+    add_custom_target(iOS_Targets)
+    add_custom_target(macOS_Targets)
 
-	foreach(target_name ${all_targets})
-		if(${target_name} MATCHES "ios")
-			add_dependencies(iOS_Targets ${target_name})
-		else()
-			add_dependencies(macOS_Targets ${target_name})
-		endif()
-	endforeach()
+    foreach(target_name ${all_targets})
+        if(${target_name} MATCHES "ios")
+            add_dependencies(iOS_Targets ${target_name})
+        else()
+            add_dependencies(macOS_Targets ${target_name})
+        endif()
+    endforeach()
 
 endif()
 
