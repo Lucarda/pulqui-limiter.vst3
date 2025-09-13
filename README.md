@@ -4,9 +4,26 @@ experimental VST3 audio limiter based on https://github.com/Lucarda/pd-pulqui.
 
 there might be binaries on https://github.com/Lucarda/pulqui-limiter.vst3/releases or compile yourself.
 
+
+### additional notes on macOS
+
+the plugin bundle is automatically built in github's CI and is not signed
+with an apple-developer id. to use the plugin downloaded from the releases
+section you must remove its quarantine attributes:
+
+- open Applications/Utilities/Terminal
+- type "sudo xattr -r -d com.apple.quarantine" and add a space
+- drag the downloaded bundle onto Terminal to add the path
+- hit enter
+- enter your password.
+
+now you can place the bundle in your vst3 default dir and the host will
+find it and make it available. note that if you compile yourself you don't 
+have to do all this quarantine stuff.
+
 ## Compiling
 
-basic Dependencies:
+base dependencies:
 
 - git
 - Cmake
@@ -16,36 +33,36 @@ basic Dependencies:
 
     sudo apt-get install cmake gcc "libstdc++6" libx11-xcb-dev libxcb-util-dev libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev libxcb-keysyms1-dev
 
-clone repository:
+#### clone repository:
 
-    git clone <repo>
+    git clone https://github.com/Lucarda/pulqui-limiter.vst3.git
 
-    cd to <repo>
+    cd pulqui-limiter.vst3
 
-init submodules:
+#### init submodules:
 
     git submodule update --init --recursive
 
-make build folder and cd to it:
+#### make build folder and cd to it:
 
     mkdir build && cd build
 
-
 linux:
 
-    cmake ../ -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_CREATE_MODULE_INFO=off
+    cmake ../ -DCMAKE_BUILD_TYPE:STRING=release
 
     make
 
 win:
 
-    cmake ../ -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_CREATE_MODULE_INFO=off -DSMTG_USE_STATIC_CRT:BOOL=ON
+    cmake ../ -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_USE_STATIC_CRT:BOOL=ON
 
     cmake --build . --config Release
 
 mac:
 
-    cmake -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_CREATE_MODULE_INFO=off -DSMTG_DISABLE_CODE_SIGNING=on ../
+    cmake -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_DISABLE_CODE_SIGNING=on ../
 
     cmake --build . --config Release
    
+![vst logo](VST_Compatible_Logo_Steinberg_with_TM.png)
