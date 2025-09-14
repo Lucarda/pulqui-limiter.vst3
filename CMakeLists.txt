@@ -96,6 +96,9 @@ add_subdirectory(public.sdk/samples/vst-utilities)
 # build pulqui-limiter
 add_subdirectory(pulquilimiter-src)
 
+# build pulqui-crossover
+add_subdirectory(pulquicrossover-src)
+
 
 #-------------------------------------------------------------------------------
 # switch off all following ?
