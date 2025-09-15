@@ -49,7 +49,7 @@ elseif(SMTG_WIN)
         #resource/win32resource.rc
     )
     if(MSVC)
-        set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PulquiLimiter)
+        set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PulquiCrossover)
 
         smtg_target_set_debug_executable(PulquiCrossover
             "$(ProgramW6432)/Steinberg/VST3PluginTestHost/VST3PluginTestHost.exe"

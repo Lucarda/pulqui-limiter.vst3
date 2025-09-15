@@ -34,5 +34,5 @@
 #define stringCompanyWeb		"https://github.com/Lucarda"
 #define stringCompanyEmail		"mailto:lucarda27@hotmail.com"
 #define stringCompanyName		"Lucas Cordiviola"
-#define stringLegalCopyright	"Copyright(c) 2024 Lucas Cordiviola."
+#define stringLegalCopyright	"Copyright(c) 2025 Lucas Cordiviola."
 #define stringLegalTrademarks	"VST is a trademark of Steinberg Media Technologies GmbH"

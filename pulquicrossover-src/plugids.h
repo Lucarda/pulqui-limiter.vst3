@@ -21,14 +21,11 @@ namespace Steinberg {
 namespace Vst {
 
 // HERE are defined the parameter Ids which are exported to the host
-enum PulquiLimiterParams : Vst::ParamID
+enum PulquiCrossoverParams : Vst::ParamID
 {
-	kBypassId = 100,
-
-	kParamTreshId = 102,
-	kParamSrateId = 103,
-	kParamLatencyBypassId = 104,
-	kParamMakeUpId = 105,
+    kBypassId = 100,
+    kParamSplitId = 101,
+    kParamLpId = 102,
 };
 
 

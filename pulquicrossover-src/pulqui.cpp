@@ -15,152 +15,108 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+/*
+ * 4th order Linkwitz-Riley filters
+ * taken from pseudo code in:
+ * https://www.musicdsp.org/en/latest/Filters/266-4th-order-linkwitz-riley-filters.html
+ * (the first example)
+ */
+
 #include "./plugprocessor.h"
+#include <math.h>
 
 namespace Steinberg {
 namespace Vst{
 
-void PlugProcessor::pq_bee32(Buffer* self)
+
+double PlugProcessor::pqcrossover_tilde_lp(Buffer *x, double in)
 {
-    int pos;
-    int startpos;
-    int endpos;
-    double peakIEEE;
-    startpos = 0;
-    endpos = 0;
-    pos = 0;
+    x->lp.tempx=in;
 
-    LOOP:while (pos < PULQUI_SCAN_SIZE)
-    {
-        if ( self->x_ramchpositive[pos] > 0.0001) break;
-        pos++;
-    }
-    startpos = pos;
-    peakIEEE = 0;
-    while (pos < PULQUI_SCAN_SIZE)
-    {
-        if (self->x_ramchpositive[pos] > peakIEEE) peakIEEE = self->x_ramchpositive[pos];
-        if ( self->x_ramchpositive[pos] < 0.0001) break;
-        pos++;
-    }
-    endpos = pos;
-    for (pos = startpos; pos < endpos ; pos++)
-    {
-        self->x_ramchpositive[pos] = peakIEEE;
-    }
-    //endpos = pos;
-    if (pos < PULQUI_SCAN_SIZE) goto LOOP;
-}
+    x->lp.tempy=x->lp.a0*x->lp.tempx+x->lp.a1*x->lp.xm1+x->lp.a2*x->lp.xm2+x->lp.a3*x->lp.xm3+x->lp.a4*x->lp.xm4-x->b1*x->lp.ym1-x->b2*x->lp.ym2-x->b3*x->lp.ym3-x->b4*x->lp.ym4;
+    x->lp.xm4=x->lp.xm3;
+    x->lp.xm3=x->lp.xm2;
+    x->lp.xm2=x->lp.xm1;
+    x->lp.xm1=x->lp.tempx;
+    x->lp.ym4=x->lp.ym3;
+    x->lp.ym3=x->lp.ym2;
+    x->lp.ym2=x->lp.ym1;
+    x->lp.ym1=x->lp.tempy;
 
-void PlugProcessor::pq_bee32_negative(Buffer* self)
-{
-    int pos;
-    int startpos;
-    int endpos;
-    double peakIEEE;
-    startpos = 0;
-    endpos = 0;
-    pos = 0;
-
-    LOOP:while (pos < PULQUI_SCAN_SIZE)
-    {
-        if ( self->x_ramchnegative[pos] < -0.0001) break;
-        pos++;
-    }
-    startpos = pos;
-    peakIEEE = 0;
-    while (pos < PULQUI_SCAN_SIZE)
-    {
-        if (self->x_ramchnegative[pos] < peakIEEE) peakIEEE = self->x_ramchnegative[pos];
-        if ( self->x_ramchnegative[pos] > -0.0001) break;
-        pos++;
-    }
-    endpos = pos;
-    for (pos = startpos; pos < endpos ; pos++)
-    {
-        self->x_ramchnegative[pos] = peakIEEE;
-    }
-    //endpos = pos;
-    if (pos < PULQUI_SCAN_SIZE) goto LOOP;
-}
-
-void PlugProcessor::pulqui_tilde_do_pulqui(Buffer* self)
-{
-    int i;
-    for (i = 0; i < PULQUI_SIZE; i++)
-    {
-         self->x_ramchpositive[PULQUI_SIZE + i] = self->x_ramch[i];
-         self->x_ramchnegative[PULQUI_SIZE + i] = self->x_ramch[i];
-    }
-
-    pq_bee32(self);
-    pq_bee32_negative(self);
-
-    for (i = 0; i < PULQUI_SIZE; i++)
-    {
-        self->x_bufsignalout[i] = self->x_bufsignal[i];
-        if (self->x_ramchpositive[i] >  0.0001)
-        {
-            self->x_bufpulqui[i] = self->x_ramchpositive[i];
-        }
-        else if (self->x_ramchnegative[i] <  -0.0001)
-        {
-            self->x_bufpulqui[i] = self->x_ramchnegative[i] * -1;
-        }
-        else
-        {
-            self->x_bufpulqui[i] = 1;
-        }
-    }
-
-    for (i = 0; i < PULQUI_SIZE; i++)
-    {
-         self->x_ramchpositive[i] = self->x_ramchpositive[PULQUI_SIZE + i];
-         self->x_ramchnegative[i] = self->x_ramchnegative[PULQUI_SIZE + i];
-    }
-
-    for (i = 0; i < PULQUI_SIZE; i++)
-    {
-        self->x_bufsignal[i] = self->x_ramch[i];
-    }
+    return (x->lp.tempy);
 }
 
 
-void PlugProcessor::pulqui(Buffer* self, int32 nSamples)
+double PlugProcessor::pqcrossover_tilde_hp(Buffer *x, double in)
 {
-	int n_samples = (int)nSamples;
-	double thresh = mThreshValue;
-	double f;
-	
-	for (int i = 0; i < n_samples; i++)
-    {
-        self->x_ramch[i + self->x_pulquiblock] = self->x_input[i];
-        if(mLatencyBypass)
-        {
-            self->x_output[i] = self->x_bufsignalout[i + self->x_pulquiblock];
-        }
-        else
-        {
-            if (self->x_bufpulqui[i + self->x_pulquiblock] > \
-            thresh)
-                f = self->x_bufsignalout[i + self->x_pulquiblock]*\
-                (thresh / self->x_bufpulqui[i + self->x_pulquiblock]);
-            else 
-                f = self->x_bufsignalout[i + self->x_pulquiblock];
-            if (mMakeUp)
-                self->x_output[i] = f*(0.998/thresh);
-            else
-            self->x_output[i] = f;
-        }
-    }
+    x->hp.tempx=in;
 
-    if(self->x_pulquiblock > ((PULQUI_SIZE - n_samples) - 1))
-    {
-        pulqui_tilde_do_pulqui(self);
-        self->x_pulquiblock = 0;
-    }
-    else self->x_pulquiblock += n_samples;
+    x->hp.tempy=x->hp.a0*x->hp.tempx+x->hp.a1*x->hp.xm1+x->hp.a2*x->hp.xm2+x->hp.a3*x->hp.xm3+x->hp.a4*x->hp.xm4-x->b1*x->hp.ym1-x->b2*x->hp.ym2-x->b3*x->hp.ym3-x->b4*x->hp.ym4;
+    x->hp.xm4=x->hp.xm3;
+    x->hp.xm3=x->hp.xm2;
+    x->hp.xm2=x->hp.xm1;
+    x->hp.xm1=x->hp.tempx;
+    x->hp.ym4=x->hp.ym3;
+    x->hp.ym3=x->hp.ym2;
+    x->hp.ym2=x->hp.ym1;
+    x->hp.ym1=x->hp.tempy;
+
+    return (x->hp.tempy);
 }
+
+void PlugProcessor::pqcrossover_setup_filter(Buffer *x)
+{
+    //------------------------------
+    x->wc=2*x->pi*x->fc;
+    x->wc2=x->wc*x->wc;
+    x->wc3=x->wc2*x->wc;
+    x->wc4=x->wc2*x->wc2;
+    x->k=x->wc/tan(x->pi*x->fc/x->srate);
+    x->k2=x->k*x->k;
+    x->k3=x->k2*x->k;
+    x->k4=x->k2*x->k2;
+    x->sqrt2=sqrt(2);
+    x->sq_tmp1=x->sqrt2*x->wc3*x->k;
+    x->sq_tmp2=x->sqrt2*x->wc*x->k3;
+    x->a_tmp=4*x->wc2*x->k2+2*x->sq_tmp1+x->k4+2*x->sq_tmp2+x->wc4;
+
+    x->b1=(4*(x->wc4+x->sq_tmp1-x->k4-x->sq_tmp2))/x->a_tmp;
+    x->b2=(6*x->wc4-8*x->wc2*x->k2+6*x->k4)/x->a_tmp;
+    x->b3=(4*(x->wc4-x->sq_tmp1+x->sq_tmp2-x->k4))/x->a_tmp;
+    x->b4=(x->k4-2*x->sq_tmp1+x->wc4-2*x->sq_tmp2+4*x->wc2*x->k2)/x->a_tmp;
+
+    //================================================
+    // low-pass
+    //================================================
+    x->lp.a0=x->wc4/x->a_tmp;
+    x->lp.a1=4*x->wc4/x->a_tmp;
+    x->lp.a2=6*x->wc4/x->a_tmp;
+    x->lp.a3=x->lp.a1;
+    x->lp.a4=x->lp.a0;
+    //=====================================================
+    // high-pass
+    //=====================================================
+    x->hp.a0=x->k4/x->a_tmp;
+    x->hp.a1=-4*x->k4/x->a_tmp;
+    x->hp.a2=6*x->k4/x->a_tmp;
+    x->hp.a3=x->hp.a1;
+    x->hp.a4=x->hp.a0;
+    //------------------------------
+}
+
+
+void PlugProcessor::pqcrossover_tilde_setcrossf(Buffer *x, double freq, double samplerate)
+{
+    if (freq < 20. || freq > 20000.) return;
+    if (freq != x->fc || samplerate != x->srate)
+    {
+        x->fc = freq;
+        x->srate = samplerate;
+        pqcrossover_setup_filter(x);
+    }
+}
+
 
 } // namespace
 } // namespace Steinberg

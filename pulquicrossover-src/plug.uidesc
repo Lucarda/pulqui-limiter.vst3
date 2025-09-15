@@ -9,10 +9,8 @@
 		"gradients": {},
 		"control-tags": {
 			"Bypass": "100",
-			"LatencyBypass": "104",
-			"MakeUp": "105",
-			"Samplerate": "103",
-			"Threshold": "102"
+			"SplitFreq": "101",
+			"Lp": "102"
 		},
 		"custom": {
 			"FocusDrawing": {},
@@ -35,12 +33,12 @@
 				"SplitViewSize_1_1": "0.4831130690161526963777305354597046971321",
 				"SplitViewSize_2_0": "0.5200000000000000177635683940025046467781",
 				"SplitViewSize_2_1": "0.4737500000000000044408920985006261616945",
-				"TabSwitchValue": "2",
+				"TabSwitchValue": "0",
 				"Version": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "9"
+				"SelectedRow": "6"
 			},
 			"UIBitmapsDataSource": {
 				"SelectedRow": "-1"
@@ -153,44 +151,16 @@
 							"boxframe-color": "~ BlackCColor",
 							"checkmark-color": "~ BlackCColor",
 							"class": "CCheckBox",
-							"default-value": "0.5",
+							"control-tag": "Lp",
 							"draw-crossbox": "false",
 							"font": "~ SystemFont",
 							"font-color": "~ GreyCColor",
 							"frame-width": "1",
-							"max-value": "1",
-							"min-value": "0",
-							"mouse-enabled": "true",
 							"opacity": "1",
 							"origin": "150, 115",
 							"round-rect-radius": "0",
-							"size": "40, 20",
-							"title": "LP",
-							"transparent": "false",
-							"wants-focus": "true",
-							"wheel-inc-value": "0.1"
-						}
-					},
-					"CCheckBox": {
-						"attributes": {
-							"autosize-to-fit": "false",
-							"boxfill-color": "foo-grey",
-							"boxframe-color": "~ BlackCColor",
-							"checkmark-color": "~ BlackCColor",
-							"class": "CCheckBox",
-							"default-value": "0.5",
-							"draw-crossbox": "false",
-							"font": "~ SystemFont",
-							"font-color": "~ GreyCColor",
-							"frame-width": "1",
-							"max-value": "1",
-							"min-value": "0",
-							"mouse-enabled": "true",
-							"opacity": "1",
-							"origin": "250, 115",
-							"round-rect-radius": "0",
-							"size": "45, 20",
-							"title": "HP",
+							"size": "130, 20",
+							"title": "LP (otherwise HP)",
 							"transparent": "false",
 							"wants-focus": "true",
 							"wheel-inc-value": "0.1"
@@ -201,16 +171,13 @@
 							"back-color": "foo-grey",
 							"background-offset": "0, 0",
 							"class": "CTextEdit",
-							"default-value": "0.5",
+							"control-tag": "SplitFreq",
 							"font": "~ NormalFont",
 							"font-antialias": "true",
 							"font-color": "~ BlackCColor",
 							"frame-color": "~ BlackCColor",
 							"frame-width": "1",
 							"immediate-text-change": "false",
-							"max-value": "1",
-							"min-value": "0",
-							"mouse-enabled": "true",
 							"opacity": "1",
 							"origin": "170, 75",
 							"round-rect-radius": "6",
@@ -229,7 +196,6 @@
 							"text-inset": "0, 0",
 							"text-rotation": "0",
 							"text-shadow-offset": "1, 1",
-							"title": "600",
 							"transparent": "false",
 							"value-precision": "2",
 							"wants-focus": "true",
