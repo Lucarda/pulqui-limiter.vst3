@@ -114,7 +114,7 @@ tresult PLUGIN_API PlugController::initialize (FUnknown* context)
                                  Vst::ParameterInfo::kCanAutomate | Vst::ParameterInfo::kIsBypass,
                                  PulquiCrossoverParams::kBypassId);
 
-        parameters.addParameter (STR16 ("Low Pass | Hi Pass"), nullptr, 1, 0,
+        parameters.addParameter (STR16 ("Low Pass"), nullptr, 1, 0,
                                  Vst::ParameterInfo::kCanAutomate,
                                  PulquiCrossoverParams::kParamLpId);
 

@@ -92,103 +92,132 @@ add_subdirectory(public.sdk/samples/vst-hosting)
 set(SDK_IDE_UTILITIES_FOLDER FOLDER "Utilities")
 add_subdirectory(public.sdk/samples/vst-utilities)
 
-
-# build pulqui-limiter
-add_subdirectory(pulquilimiter-src)
-
-# build pulqui-crossover
-add_subdirectory(pulquicrossover-src)
-
-
 #-------------------------------------------------------------------------------
-# switch off all following ?
-
-if(0)
-
-
+# Limiter
 #-------------------------------------------------------------------------------
-# IDE sorting
-#-------------------------------------------------------------------------------
-include(SMTG_CustomModuleTarget)
-
-set_property(
-    TARGET
-        sdk
-        sdk_common
-        sdk_hosting
-        base
-        pluginterfaces
-        cmake_modules
-        cmake_VST_modules
-    PROPERTY
-        ${SDK_IDE_LIBS_FOLDER}
+project(PulquiLimiter
+    VERSION 0.1.1
+    DESCRIPTION "PulquiLimiter VST3 Plug-in"
 )
 
-if(TARGET base_ios)
-    set_property(
-        TARGET
-            base_ios
-            pluginterfaces_ios
-        PROPERTY
-            ${SDK_IDE_LIBS_FOLDER}
-    )
-endif()
 
-if(SMTG_ENABLE_VSTGUI_SUPPORT)
-    set_property(
-        TARGET
-            vstgui
-            vstgui_support
-            vstgui_uidescription
-        PROPERTY
-            ${SDK_IDE_LIBS_FOLDER}
-    )
+smtg_enable_vst3_sdk()
 
-    if(TARGET vstgui_standalone)
-        set_target_properties(vstgui_standalone
-            PROPERTIES
-                ${SDK_IDE_LIBS_FOLDER}
+smtg_add_vst3plugin(PulquiLimiter
+    pulquilimiter-src/plugcontroller.h
+    pulquilimiter-src/plugids.h
+    pulquilimiter-src/plugprocessor.h
+    pulquilimiter-src/version.h
+    pulquilimiter-src/plugfactory.cpp
+    pulquilimiter-src/plugcontroller.cpp
+    pulquilimiter-src/plugprocessor.cpp
+    pulquilimiter-src/pulqui.cpp
+    pulquilimiter-src/plug.uidesc
+)
+
+target_link_libraries(PulquiLimiter
+    PRIVATE
+        sdk
+        vstgui_support
+)
+
+smtg_target_add_plugin_resources(PulquiLimiter
+    RESOURCES
+        pulquilimiter-src/plug.uidesc
+)
+
+smtg_target_add_plugin_snapshots (PulquiLimiter
+    RESOURCES
+)
+
+smtg_target_configure_version_file(PulquiLimiter)
+
+if(SMTG_MAC)
+    smtg_target_set_bundle(PulquiLimiter
+        BUNDLE_IDENTIFIER net.steinberg.hello-world
+        COMPANY_NAME "Steinberg Media Technologies GmbH"
+    )
+    smtg_target_set_debug_executable(PulquiLimiter
+        "/Applications/VST3PluginTestHost.app"
+        "--pluginfolder;$(BUILT_PRODUCTS_DIR)"
+    )
+elseif(SMTG_WIN)
+    target_sources(PulquiLimiter PRIVATE 
+        #resource/win32resource.rc
+    )
+    if(MSVC)
+        set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PulquiLimiter)
+
+        smtg_target_set_debug_executable(PulquiLimiter
+            "$(ProgramW6432)/Steinberg/VST3PluginTestHost/VST3PluginTestHost.exe"
+            "--pluginfolder \"$(OutDir)/\""
         )
     endif()
-endif()
+endif(SMTG_MAC)
+
+
 
 #-------------------------------------------------------------------------------
-# macOS & iOS collection targets
+# Crossover
 #-------------------------------------------------------------------------------
-option(SMTG_VSTSDK_GENERATE_MACOS_IOS_COLLECTION_TARGETS "Create macOS and iOS collection targets" OFF)
 
-if(SMTG_VSTSDK_GENERATE_MACOS_IOS_COLLECTION_TARGETS)
-
-    function(get_all_targets var)
-        set(targets)
-        get_all_targets_recursive(targets ${CMAKE_CURRENT_SOURCE_DIR})
-        set(${var} ${targets} PARENT_SCOPE)
-    endfunction()
-
-    macro(get_all_targets_recursive targets dir)
-        get_property(subdirectories DIRECTORY ${dir} PROPERTY SUBDIRECTORIES)
-        foreach(subdir ${subdirectories})
-            get_all_targets_recursive(${targets} ${subdir})
-        endforeach()
-
-        get_property(current_targets DIRECTORY ${dir} PROPERTY BUILDSYSTEM_TARGETS)
-        list(APPEND ${targets} ${current_targets})
-    endmacro()
-
-    get_all_targets(all_targets)
-
-    add_custom_target(iOS_Targets)
-    add_custom_target(macOS_Targets)
-
-    foreach(target_name ${all_targets})
-        if(${target_name} MATCHES "ios")
-            add_dependencies(iOS_Targets ${target_name})
-        else()
-            add_dependencies(macOS_Targets ${target_name})
-        endif()
-    endforeach()
-
-endif()
+project(PulquiCrossover
+    VERSION 0.1.0
+    DESCRIPTION "PulquiCrossover VST3 Plug-in"
+)
 
 
-endif()
+smtg_enable_vst3_sdk()
+
+smtg_add_vst3plugin(PulquiCrossover
+    pulquicrossover-src/plugcontroller.h
+    pulquicrossover-src/plugids.h
+    pulquicrossover-src/plugprocessor.h
+    pulquicrossover-src/version.h
+    pulquicrossover-src/plugfactory.cpp
+    pulquicrossover-src/plugcontroller.cpp
+    pulquicrossover-src/plugprocessor.cpp
+    pulquicrossover-src/pulqui.cpp
+    pulquicrossover-src/plug.uidesc
+)
+
+target_link_libraries(PulquiCrossover
+    PRIVATE
+        sdk
+        vstgui_support
+)
+
+smtg_target_add_plugin_resources(PulquiCrossover
+    RESOURCES
+        pulquicrossover-src/plug.uidesc
+)
+
+smtg_target_add_plugin_snapshots (PulquiCrossover
+    RESOURCES
+)
+
+smtg_target_configure_version_file(PulquiCrossover)
+
+if(SMTG_MAC)
+    smtg_target_set_bundle(PulquiCrossover
+        BUNDLE_IDENTIFIER net.steinberg.hello-world
+        COMPANY_NAME "Steinberg Media Technologies GmbH"
+    )
+    smtg_target_set_debug_executable(PulquiCrossover
+        "/Applications/VST3PluginTestHost.app"
+        "--pluginfolder;$(BUILT_PRODUCTS_DIR)"
+    )
+elseif(SMTG_WIN)
+    target_sources(PulquiCrossover PRIVATE 
+        #resource/win32resource.rc
+    )
+    if(MSVC)
+        set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PulquiCrossover)
+
+        smtg_target_set_debug_executable(PulquiCrossover
+            "$(ProgramW6432)/Steinberg/VST3PluginTestHost/VST3PluginTestHost.exe"
+            "--pluginfolder \"$(OutDir)/\""
+        )
+    endif()
+endif(SMTG_MAC)
+
