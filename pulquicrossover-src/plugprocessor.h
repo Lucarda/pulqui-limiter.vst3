@@ -108,7 +108,7 @@ protected:
         struct filter lp;
         struct filter hp;
     };
-    
+
     Buffer *ch1 = NULL;
     Buffer *ch2 = NULL;
 
@@ -118,10 +118,10 @@ protected:
     bool mIsStereo = true;
 
 
-	double pqcrossover_tilde_lp(Buffer *x, double in);
-	double pqcrossover_tilde_hp(Buffer *x, double in);
-	void pqcrossover_setup_filter(Buffer *x);
-	void pqcrossover_tilde_setcrossf(Buffer *x, double freq, double samplerate);
+    double pqcrossover_tilde_lp(Buffer *x, double in);
+    double pqcrossover_tilde_hp(Buffer *x, double in);
+    void pqcrossover_setup_filter(Buffer *x);
+    void pqcrossover_tilde_setcrossf(Buffer *x, double freq, double samplerate);
 
 };
 

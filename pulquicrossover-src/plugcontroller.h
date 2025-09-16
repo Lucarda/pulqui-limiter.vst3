@@ -31,36 +31,36 @@ class PlugController : public Vst::EditController,
 {
 public:
 //------------------------------------------------------------------------
-	// create function required for plug-in factory,
-	// it will be called to create new instances of this controller
+    // create function required for plug-in factory,
+    // it will be called to create new instances of this controller
 //------------------------------------------------------------------------
-	static FUnknown* createInstance (void*)
-	{
-		return (Vst::IEditController*)new PlugController ();
-	}
+    static FUnknown* createInstance (void*)
+    {
+        return (Vst::IEditController*)new PlugController ();
+    }
 
-	//---from IPluginBase--------
-	tresult PLUGIN_API initialize (FUnknown* context) SMTG_OVERRIDE;
+    //---from IPluginBase--------
+    tresult PLUGIN_API initialize (FUnknown* context) SMTG_OVERRIDE;
 
-	//---from EditController-----
-	IPlugView* PLUGIN_API createView (const char* name) SMTG_OVERRIDE;
-	tresult PLUGIN_API setComponentState (IBStream* state) SMTG_OVERRIDE;
+    //---from EditController-----
+    IPlugView* PLUGIN_API createView (const char* name) SMTG_OVERRIDE;
+    tresult PLUGIN_API setComponentState (IBStream* state) SMTG_OVERRIDE;
 
-	//---from IParameterFunctionName----
-	tresult PLUGIN_API getParameterIDFromFunctionName (Vst::UnitID unitID, FIDString functionName,
-	                                                   Vst::ParamID& paramID) override;
+    //---from IParameterFunctionName----
+    tresult PLUGIN_API getParameterIDFromFunctionName (Vst::UnitID unitID, FIDString functionName,
+                                                       Vst::ParamID& paramID) override;
 
 
-	OBJ_METHODS (PlugController, Vst::EditController)
-	DEFINE_INTERFACES
-		DEF_INTERFACE (Vst::IParameterFunctionName)
-	END_DEFINE_INTERFACES (Vst::EditController)
-	DELEGATE_REFCOUNT (Vst::EditController)
-	
+    OBJ_METHODS (PlugController, Vst::EditController)
+    DEFINE_INTERFACES
+        DEF_INTERFACE (Vst::IParameterFunctionName)
+    END_DEFINE_INTERFACES (Vst::EditController)
+    DELEGATE_REFCOUNT (Vst::EditController)
+
 
 //-----------------------------------------------------------------------------
 protected:
-	double rsamplerate;
+    double rsamplerate;
 
 };
 

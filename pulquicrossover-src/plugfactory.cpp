@@ -17,36 +17,36 @@
 
 #include "public.sdk/source/main/pluginfactory.h"
 
-#include "./plugcontroller.h"	// for createInstance
-#include "./plugprocessor.h"	// for createInstance
-#include "./plugids.h"			// for uids
-#include "./version.h"			// for version and naming
+#include "./plugcontroller.h"   // for createInstance
+#include "./plugprocessor.h"    // for createInstance
+#include "./plugids.h"          // for uids
+#include "./version.h"          // for version and naming
 
 #define stringSubCategory Vst::PlugType::kFxFilter // Subcategory for this plug-in (to be changed if needed, see PlugType in ivstaudioprocessor.h)
 
 using namespace Steinberg::Vst;
 
-BEGIN_FACTORY_DEF (stringCompanyName, stringCompanyWeb,	stringCompanyEmail)
+BEGIN_FACTORY_DEF (stringCompanyName, stringCompanyWeb, stringCompanyEmail)
 
-	DEF_CLASS2 (INLINE_UID_FROM_FUID(MyProcessorUID),
-				PClassInfo::kManyInstances,	// cardinality  
-				kVstAudioEffectClass,	// the component category (do not change this)
-				stringPluginName,		// here the plug-in name (to be changed)
-				Vst::kDistributable,	// means that component and controller could be distributed on different computers
-				stringSubCategory,		// Subcategory for this plug-in (to be changed)
-				FULL_VERSION_STR,		// Plug-in version (to be changed)
-				kVstVersionString,		// the VST 3 SDK version (do not change this, always use this define)
-				Steinberg::Vst::PlugProcessor::createInstance)	// function pointer called when this component should be instantiated
+    DEF_CLASS2 (INLINE_UID_FROM_FUID(MyProcessorUID),
+                PClassInfo::kManyInstances, // cardinality
+                kVstAudioEffectClass,   // the component category (do not change this)
+                stringPluginName,       // here the plug-in name (to be changed)
+                Vst::kDistributable,    // means that component and controller could be distributed on different computers
+                stringSubCategory,      // Subcategory for this plug-in (to be changed)
+                FULL_VERSION_STR,       // Plug-in version (to be changed)
+                kVstVersionString,      // the VST 3 SDK version (do not change this, always use this define)
+                Steinberg::Vst::PlugProcessor::createInstance)  // function pointer called when this component should be instantiated
 
-	DEF_CLASS2 (INLINE_UID_FROM_FUID(MyControllerUID),
-				PClassInfo::kManyInstances,  // cardinality   
-				kVstComponentControllerClass,// the Controller category (do not change this)
-				stringPluginName "Controller",	// controller name (can be the same as the component name)
-				0,						// not used here
-				"",						// not used here
-				FULL_VERSION_STR,		// Plug-in version (to be changed)
-				kVstVersionString,		// the VST 3 SDK version (do not change this, always use this define)
-				Steinberg::Vst::PlugController::createInstance)// function pointer called when this component should be instantiated
+    DEF_CLASS2 (INLINE_UID_FROM_FUID(MyControllerUID),
+                PClassInfo::kManyInstances,  // cardinality
+                kVstComponentControllerClass,// the Controller category (do not change this)
+                stringPluginName "Controller",  // controller name (can be the same as the component name)
+                0,                      // not used here
+                "",                     // not used here
+                FULL_VERSION_STR,       // Plug-in version (to be changed)
+                kVstVersionString,      // the VST 3 SDK version (do not change this, always use this define)
+                Steinberg::Vst::PlugController::createInstance)// function pointer called when this component should be instantiated
 
 END_FACTORY
 

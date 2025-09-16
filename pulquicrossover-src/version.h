@@ -23,16 +23,16 @@
 #include "projectversion.h"
 
 // HERE you have to define your plug-in, company name, email and web
-#define stringPluginName		"PulquiCrossover"
+#define stringPluginName        "PulquiCrossover"
 
-#define stringOriginalFilename	"PulquiCrossover.vst3"
+#define stringOriginalFilename  "PulquiCrossover.vst3"
 #if SMTG_PLATFORM_64
-#define stringFileDescription	"PulquiCrossover VST3 (64Bit)"
+#define stringFileDescription   "PulquiCrossover VST3 (64Bit)"
 #else
-#define stringFileDescription	"PulquiCrossover VST3"
+#define stringFileDescription   "PulquiCrossover VST3"
 #endif
-#define stringCompanyWeb		"https://github.com/Lucarda"
-#define stringCompanyEmail		"mailto:lucarda27@hotmail.com"
-#define stringCompanyName		"Lucas Cordiviola"
-#define stringLegalCopyright	"Copyright(c) 2025 Lucas Cordiviola."
-#define stringLegalTrademarks	"VST is a trademark of Steinberg Media Technologies GmbH"
+#define stringCompanyWeb        "https://github.com/Lucarda"
+#define stringCompanyEmail      "mailto:lucarda27@hotmail.com"
+#define stringCompanyName       "Lucas Cordiviola"
+#define stringLegalCopyright    "Copyright(c) 2025 Lucas Cordiviola."
+#define stringLegalTrademarks   "VST is a trademark of Steinberg Media Technologies GmbH"

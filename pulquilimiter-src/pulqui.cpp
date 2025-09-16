@@ -128,11 +128,11 @@ void PlugProcessor::pulqui_tilde_do_pulqui(Buffer* self)
 
 void PlugProcessor::pulqui(Buffer* self, int32 nSamples)
 {
-	int n_samples = (int)nSamples;
-	double thresh = mThreshValue;
-	double f;
-	
-	for (int i = 0; i < n_samples; i++)
+    int n_samples = (int)nSamples;
+    double thresh = mThreshValue;
+    double f;
+
+    for (int i = 0; i < n_samples; i++)
     {
         self->x_ramch[i + self->x_pulquiblock] = self->x_input[i];
         if(mLatencyBypass)
@@ -145,7 +145,7 @@ void PlugProcessor::pulqui(Buffer* self, int32 nSamples)
             thresh)
                 f = self->x_bufsignalout[i + self->x_pulquiblock]*\
                 (thresh / self->x_bufpulqui[i + self->x_pulquiblock]);
-            else 
+            else
                 f = self->x_bufsignalout[i + self->x_pulquiblock];
             if (mMakeUp)
                 self->x_output[i] = f*(0.998/thresh);

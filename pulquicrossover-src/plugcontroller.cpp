@@ -86,7 +86,7 @@ bool SplitParameter::fromString (const Vst::TChar* string, Vst::ParamValue& norm
     double tmp = 0.0;
     if (wrapper.scanFloat (tmp))
     {
-        // allow only values 
+        // allow only values
         if (tmp < 20.)
         {
             tmp = 20.;
@@ -174,14 +174,14 @@ tresult PLUGIN_API PlugController::getParameterIDFromFunctionName (Vst::UnitID u
                                                                    FIDString functionName,
                                                                    Vst::ParamID& paramID)
 {
-	using namespace Vst;
+    using namespace Vst;
 
-	paramID = kNoParamId;
+    paramID = kNoParamId;
 
-	if (unitID == kRootUnitId && FIDStringsEqual (functionName, FunctionNameType::kPanPosCenterX))
-		paramID = PulquiCrossoverParams::kParamSplitId;
+    if (unitID == kRootUnitId && FIDStringsEqual (functionName, FunctionNameType::kPanPosCenterX))
+        paramID = PulquiCrossoverParams::kParamSplitId;
 
-	return (paramID != kNoParamId) ? kResultOk : kResultFalse;
+    return (paramID != kNoParamId) ? kResultOk : kResultFalse;
 }
 
 //------------------------------------------------------------------------
