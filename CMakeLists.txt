@@ -92,132 +92,14 @@ add_subdirectory(public.sdk/samples/vst-hosting)
 set(SDK_IDE_UTILITIES_FOLDER FOLDER "Utilities")
 add_subdirectory(public.sdk/samples/vst-utilities)
 
-#-------------------------------------------------------------------------------
-# Limiter
-#-------------------------------------------------------------------------------
-project(PulquiLimiter
-    VERSION 0.1.1
-    DESCRIPTION "PulquiLimiter VST3 Plug-in"
-)
-
-
-smtg_enable_vst3_sdk()
-
-smtg_add_vst3plugin(PulquiLimiter
-    pulquilimiter-src/plugcontroller.h
-    pulquilimiter-src/plugids.h
-    pulquilimiter-src/plugprocessor.h
-    pulquilimiter-src/version.h
-    pulquilimiter-src/plugfactory.cpp
-    pulquilimiter-src/plugcontroller.cpp
-    pulquilimiter-src/plugprocessor.cpp
-    pulquilimiter-src/pulqui.cpp
-    pulquilimiter-src/plug.uidesc
-)
-
-target_link_libraries(PulquiLimiter
-    PRIVATE
-        sdk
-        vstgui_support
-)
-
-smtg_target_add_plugin_resources(PulquiLimiter
-    RESOURCES
-        pulquilimiter-src/plug.uidesc
-)
-
-smtg_target_add_plugin_snapshots (PulquiLimiter
-    RESOURCES
-)
-
-smtg_target_configure_version_file(PulquiLimiter)
-
-if(SMTG_MAC)
-    smtg_target_set_bundle(PulquiLimiter
-        BUNDLE_IDENTIFIER net.steinberg.hello-world
-        COMPANY_NAME "Steinberg Media Technologies GmbH"
-    )
-    smtg_target_set_debug_executable(PulquiLimiter
-        "/Applications/VST3PluginTestHost.app"
-        "--pluginfolder;$(BUILT_PRODUCTS_DIR)"
-    )
-elseif(SMTG_WIN)
-    target_sources(PulquiLimiter PRIVATE 
-        #resource/win32resource.rc
-    )
-    if(MSVC)
-        set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PulquiLimiter)
-
-        smtg_target_set_debug_executable(PulquiLimiter
-            "$(ProgramW6432)/Steinberg/VST3PluginTestHost/VST3PluginTestHost.exe"
-            "--pluginfolder \"$(OutDir)/\""
-        )
-    endif()
-endif(SMTG_MAC)
-
-
 
 #-------------------------------------------------------------------------------
-# Crossover
+# build plugins
 #-------------------------------------------------------------------------------
 
-project(PulquiCrossover
-    VERSION 0.1.0
-    DESCRIPTION "PulquiCrossover VST3 Plug-in"
-)
 
+# limiter
+add_subdirectory(pulquilimiter-src)
 
-smtg_enable_vst3_sdk()
-
-smtg_add_vst3plugin(PulquiCrossover
-    pulquicrossover-src/plugcontroller.h
-    pulquicrossover-src/plugids.h
-    pulquicrossover-src/plugprocessor.h
-    pulquicrossover-src/version.h
-    pulquicrossover-src/plugfactory.cpp
-    pulquicrossover-src/plugcontroller.cpp
-    pulquicrossover-src/plugprocessor.cpp
-    pulquicrossover-src/pulqui.cpp
-    pulquicrossover-src/plug.uidesc
-)
-
-target_link_libraries(PulquiCrossover
-    PRIVATE
-        sdk
-        vstgui_support
-)
-
-smtg_target_add_plugin_resources(PulquiCrossover
-    RESOURCES
-        pulquicrossover-src/plug.uidesc
-)
-
-smtg_target_add_plugin_snapshots (PulquiCrossover
-    RESOURCES
-)
-
-smtg_target_configure_version_file(PulquiCrossover)
-
-if(SMTG_MAC)
-    smtg_target_set_bundle(PulquiCrossover
-        BUNDLE_IDENTIFIER net.steinberg.hello-world
-        COMPANY_NAME "Steinberg Media Technologies GmbH"
-    )
-    smtg_target_set_debug_executable(PulquiCrossover
-        "/Applications/VST3PluginTestHost.app"
-        "--pluginfolder;$(BUILT_PRODUCTS_DIR)"
-    )
-elseif(SMTG_WIN)
-    target_sources(PulquiCrossover PRIVATE 
-        #resource/win32resource.rc
-    )
-    if(MSVC)
-        set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PulquiCrossover)
-
-        smtg_target_set_debug_executable(PulquiCrossover
-            "$(ProgramW6432)/Steinberg/VST3PluginTestHost/VST3PluginTestHost.exe"
-            "--pluginfolder \"$(OutDir)/\""
-        )
-    endif()
-endif(SMTG_MAC)
-
+# crossover
+add_subdirectory(pulquicrossover-src)
