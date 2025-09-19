@@ -101,5 +101,5 @@ add_subdirectory(public.sdk/samples/vst-utilities)
 # limiter
 add_subdirectory(pulquilimiter-src)
 
-# crossover
-add_subdirectory(pulquicrossover-src)
+# crossover 4bands
+add_subdirectory(pulquicrossover4-src)
