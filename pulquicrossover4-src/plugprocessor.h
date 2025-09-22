@@ -126,6 +126,8 @@ protected:
     bool mParam_B = true;
     bool mParam_C = true;
     bool mParam_D = true;
+    bool mParam_F2_asFirstFilter = false;
+    bool m_oldParam_F2_asFirstFilter = false;
     
     
 

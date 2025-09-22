@@ -295,6 +295,12 @@ tresult PLUGIN_API PlugProcessor::process (Vst::ProcessData& data)
                             mParam_D = (value > 0.5f);
                         break;
 
+                    case PulquiCrossoverParams::k_F2_asFirstFilter_Id:
+                        if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
+                            kResultTrue)
+                            mParam_F2_asFirstFilter = (value > 0.5f);
+                        break;
+
                 }
             }
         }
@@ -341,44 +347,86 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
     double freq2 = (double) mSplit_2 * 20000.;
     double freq3 = (double) mSplit_3 * 20000.;
     double sr = processSetup.sampleRate;
-    double in, lpAout, hpAout, lpBout, hpBout, lpCout, hpCout;
-    for (int32 n = 0; n < numFrames; n++)
+    
+
+    if (!mParam_F2_asFirstFilter)
     {
-        in = input1[n];
-        pqcrossover_tilde_setcrossf(ch1A, freq2, sr);
-        lpAout = pqcrossover_tilde_lp(ch1A, in);
-        hpAout = pqcrossover_tilde_hp(ch1A, in);
-        pqcrossover_tilde_setcrossf(ch1B, freq1, sr);
-        lpBout = pqcrossover_tilde_lp(ch1B, lpAout);
-        hpBout = pqcrossover_tilde_hp(ch1B, lpAout);
-        pqcrossover_tilde_setcrossf(ch1C, freq3, sr);
-        lpCout = pqcrossover_tilde_lp(ch1C, hpAout);
-        hpCout = pqcrossover_tilde_hp(ch1C, hpAout);
-        if (mBypass)
-            output1[n] = in;
-        else
-            output1[n] = (lpBout * mParam_A) + (hpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
-        if(mIsStereo)
+        for (int32 n = 0; n < numFrames; n++)
         {
-            in = input2[n];
-            pqcrossover_tilde_setcrossf(ch2A, freq2, sr);
-            lpAout = pqcrossover_tilde_lp(ch2A, in);
-            hpAout = pqcrossover_tilde_hp(ch2A, in);
-            pqcrossover_tilde_setcrossf(ch2B, freq1, sr);
-            lpBout = pqcrossover_tilde_lp(ch2B, lpAout);
-            hpBout = pqcrossover_tilde_hp(ch2B, lpAout);
-            pqcrossover_tilde_setcrossf(ch2C, freq3, sr);
-            lpCout = pqcrossover_tilde_lp(ch2C, hpAout);
-            hpCout = pqcrossover_tilde_hp(ch2C, hpAout);
+            double in, lpAout, hpAout, lpBout, hpBout, lpCout, hpCout;
+            in = input1[n];
+            pqcrossover_tilde_setcrossf(ch1A, freq1, sr);
+            lpAout = pqcrossover_tilde_lp(ch1A, in);
+            hpAout = pqcrossover_tilde_hp(ch1A, in);
+            pqcrossover_tilde_setcrossf(ch1B, freq2, sr);
+            lpBout = pqcrossover_tilde_lp(ch1B, hpAout);
+            hpBout = pqcrossover_tilde_hp(ch1B, hpAout);
+            pqcrossover_tilde_setcrossf(ch1C, freq3, sr);
+            lpCout = pqcrossover_tilde_lp(ch1C, hpBout);
+            hpCout = pqcrossover_tilde_hp(ch1C, hpBout);
             if (mBypass)
-                output2[n] = in;
+                output1[n] = in;
             else
-                output2[n] = (lpBout * mParam_A) + (hpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
+                output1[n] = (lpAout * mParam_A) + (lpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
+            if(mIsStereo)
+            {
+                in = input2[n];
+                pqcrossover_tilde_setcrossf(ch2A, freq1, sr);
+                lpAout = pqcrossover_tilde_lp(ch2A, in);
+                hpAout = pqcrossover_tilde_hp(ch2A, in);
+                pqcrossover_tilde_setcrossf(ch2B, freq2, sr);
+                lpBout = pqcrossover_tilde_lp(ch2B, hpAout);
+                hpBout = pqcrossover_tilde_hp(ch2B, hpAout);
+                pqcrossover_tilde_setcrossf(ch2C, freq3, sr);
+                lpCout = pqcrossover_tilde_lp(ch2C, hpBout);
+                hpCout = pqcrossover_tilde_hp(ch2C, hpBout);
+                if (mBypass)
+                    output2[n] = in;
+                else
+                    output2[n] = (lpAout * mParam_A) + (lpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
+            }
+        }
+    }
+    else
+    {
+        for (int32 n = 0; n < numFrames; n++)
+        {
+            double in, lpAout, hpAout, lpBout, hpBout, lpCout, hpCout;
+            in = input1[n];
+            pqcrossover_tilde_setcrossf(ch1A, freq2, sr);
+            lpAout = pqcrossover_tilde_lp(ch1A, in);
+            hpAout = pqcrossover_tilde_hp(ch1A, in);
+            pqcrossover_tilde_setcrossf(ch1B, freq1, sr);
+            lpBout = pqcrossover_tilde_lp(ch1B, lpAout);
+            hpBout = pqcrossover_tilde_hp(ch1B, lpAout);
+            pqcrossover_tilde_setcrossf(ch1C, freq3, sr);
+            lpCout = pqcrossover_tilde_lp(ch1C, hpAout);
+            hpCout = pqcrossover_tilde_hp(ch1C, hpAout);
+            if (mBypass)
+                output1[n] = in;
+            else
+                output1[n] = (lpBout * mParam_A) + (hpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
+            if(mIsStereo)
+            {
+                in = input2[n];
+                pqcrossover_tilde_setcrossf(ch2A, freq2, sr);
+                lpAout = pqcrossover_tilde_lp(ch2A, in);
+                hpAout = pqcrossover_tilde_hp(ch2A, in);
+                pqcrossover_tilde_setcrossf(ch2B, freq1, sr);
+                lpBout = pqcrossover_tilde_lp(ch2B, lpAout);
+                hpBout = pqcrossover_tilde_hp(ch2B, lpAout);
+                pqcrossover_tilde_setcrossf(ch2C, freq3, sr);
+                lpCout = pqcrossover_tilde_lp(ch2C, hpAout);
+                hpCout = pqcrossover_tilde_hp(ch2C, hpAout);
+                if (mBypass)
+                    output2[n] = in;
+                else
+                    output2[n] = (lpBout * mParam_A) + (hpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
+            }
         }
     }
 
     #endif
-
 
     return kResultOk;
 }
@@ -425,6 +473,10 @@ tresult PLUGIN_API PlugProcessor::setState (IBStream* state)
     if (streamer.readInt32 (Param_D) == false)
         return kResultFalse;
 
+    int32 Param_F2_first = 0;
+    if (streamer.readInt32 (Param_F2_first) == false)
+        return kResultFalse;
+
     mSplit_1 = Split_1;
     mSplit_2 = Split_2;
     mSplit_3 = Split_3;
@@ -433,6 +485,7 @@ tresult PLUGIN_API PlugProcessor::setState (IBStream* state)
     mParam_B = Param_B > 0;
     mParam_C = Param_C > 0;
     mParam_D = Param_D > 0;
+    mParam_F2_asFirstFilter = Param_F2_first > 0;
 
 
     return kResultOk;
@@ -451,6 +504,7 @@ tresult PLUGIN_API PlugProcessor::getState (IBStream* state)
     int32 Param_B = mParam_B ? 1 : 0;
     int32 Param_C = mParam_C ? 1 : 0;
     int32 Param_D = mParam_D ? 1 : 0;
+    int32 Param_F2_first = mParam_F2_asFirstFilter ? 1 : 0;
 
     IBStreamer streamer (state, kLittleEndian);
     streamer.writeFloat (Split_1);
@@ -461,6 +515,7 @@ tresult PLUGIN_API PlugProcessor::getState (IBStream* state)
     streamer.writeInt32 (Param_B);
     streamer.writeInt32 (Param_C);
     streamer.writeInt32 (Param_D);
+    streamer.writeInt32 (Param_F2_first);
 
     return kResultOk;
 }

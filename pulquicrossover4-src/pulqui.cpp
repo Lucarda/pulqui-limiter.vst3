@@ -106,13 +106,15 @@ void PlugProcessor::pqcrossover_setup_filter(Buffer *x)
 }
 
 
-void PlugProcessor::pqcrossover_tilde_setcrossf(Buffer *x, double freq, double samplerate)
+void PlugProcessor::pqcrossover_tilde_setcrossf(Buffer *x, double freq, 
+                                                        double samplerate)
 {
     if (freq < 20. || freq > 20000.) return;
-    if (freq != x->fc || samplerate != x->srate)
+    if (freq != x->fc || samplerate != x->srate || mParam_F2_asFirstFilter != m_oldParam_F2_asFirstFilter)
     {
         x->fc = freq;
         x->srate = samplerate;
+        m_oldParam_F2_asFirstFilter = mParam_F2_asFirstFilter;
         pqcrossover_setup_filter(x);
     }
 }

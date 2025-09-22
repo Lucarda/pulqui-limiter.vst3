@@ -146,6 +146,10 @@ tresult PLUGIN_API PlugController::initialize (FUnknown* context)
         parameters.addParameter (STR16 ("D band"), nullptr, 1, 0,
                                  Vst::ParameterInfo::kCanAutomate,
                                  PulquiCrossoverParams::kParam_D_Id);
+                                 
+        parameters.addParameter (STR16 ("F2 first filter"), nullptr, 1, 0,
+                                 Vst::ParameterInfo::kCanAutomate,
+                                 PulquiCrossoverParams::k_F2_asFirstFilter_Id);
 
 
 
@@ -215,6 +219,11 @@ tresult PLUGIN_API PlugController::setComponentState (IBStream* state)
     if (streamer.readInt32 (Param_D) == false)
         return kResultFalse;
     setParamNormalized (PulquiCrossoverParams::kParam_D_Id, Param_D ? 1 : 0);
+    
+    int32 Param_F2_first;
+    if (streamer.readInt32 (Param_F2_first) == false)
+        return kResultFalse;
+    setParamNormalized (PulquiCrossoverParams::k_F2_asFirstFilter_Id, Param_F2_first ? 1 : 0);
 
     return kResultOk;
 }

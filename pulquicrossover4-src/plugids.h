@@ -31,6 +31,7 @@ enum PulquiCrossoverParams : Vst::ParamID
     kParam_B_Id = 105,
     kParam_C_Id = 106,
     kParam_D_Id = 107,
+    k_F2_asFirstFilter_Id = 108,    
 };
 
 
