@@ -109,8 +109,12 @@ protected:
         struct filter hp;
     };
 
-    Buffer *ch1 = NULL;
-    Buffer *ch2 = NULL;
+    Buffer *ch1A = NULL;
+    Buffer *ch1B = NULL;
+    Buffer *ch1C = NULL;
+    Buffer *ch2A = NULL;
+    Buffer *ch2B = NULL;
+    Buffer *ch2C = NULL;
 
     
     bool mIsStereo = true;

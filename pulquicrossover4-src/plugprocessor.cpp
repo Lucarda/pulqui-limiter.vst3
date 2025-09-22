@@ -152,15 +152,23 @@ tresult PLUGIN_API PlugProcessor::setupProcessing (Vst::ProcessSetup& setup)
         processAudioPtr = &PlugProcessor::processAudio<float>;
     }
 
-    if(!ch1)
+    if(1)
     {
-        ch1 = new Buffer();
-        ch1->pi = kPI;
+        ch1A = new Buffer();
+        ch1A->pi = kPI;
+        ch1B = new Buffer();
+        ch1B->pi = kPI;
+        ch1C = new Buffer();
+        ch1C->pi = kPI;
     }
-    if(mIsStereo && !ch2)
+    if(mIsStereo)
     {
-        ch2 = new Buffer();
-        ch2->pi = kPI;
+        ch2A = new Buffer();
+        ch2A->pi = kPI;
+        ch2B = new Buffer();
+        ch2B->pi = kPI;
+        ch2C = new Buffer();
+        ch2C->pi = kPI;
     }
 
     return AudioEffect::setupProcessing (setup);
@@ -176,15 +184,23 @@ PlugProcessor::~PlugProcessor()
 //------------------------------------------------------------------------
 tresult PLUGIN_API PlugProcessor::terminate ()
 {
-    if(ch1)
+    if(1)
     {
-        delete ch1;
-        ch1 = NULL;
+        delete ch1A;
+        delete ch1B;
+        delete ch1C;
+        ch1A = NULL;
+        ch1B = NULL;
+        ch1C = NULL;
     }
-    if(ch2 && mIsStereo)
+    if(mIsStereo)
     {
-        delete ch2;
-        ch2 = NULL;
+        delete ch2A;
+        delete ch2B;
+        delete ch2C;
+        ch2A = NULL;
+        ch2B = NULL;
+        ch2C = NULL;
     }
     printf("LUCARDA -- terminate called\n");
     return AudioEffect::terminate ();
@@ -235,44 +251,44 @@ tresult PLUGIN_API PlugProcessor::process (Vst::ProcessData& data)
                             kResultTrue)
                             mBypass = (value > 0.5f);
                         break;
-                    
+
                     case PulquiCrossoverParams::kParamSplit_1_Id:
                         if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
                             kResultTrue)
                             mSplit_1= value;
                         break;
-                        
+
                     case PulquiCrossoverParams::kParamSplit_2_Id:
                         if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
                             kResultTrue)
                             mSplit_2 = value;
                         break;
-                        
+
                     case PulquiCrossoverParams::kParamSplit_3_Id:
                         if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
                             kResultTrue)
                             mSplit_3 = value;
                         break;
 
-                    
+
                     case PulquiCrossoverParams::kParam_A_Id:
                         if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
                             kResultTrue)
                             mParam_A = (value > 0.5f);
                         break;
-                        
+
                     case PulquiCrossoverParams::kParam_B_Id:
                         if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
                             kResultTrue)
                             mParam_B = (value > 0.5f);
                         break;
-                        
+
                     case PulquiCrossoverParams::kParam_C_Id:
                         if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
                             kResultTrue)
                             mParam_C = (value > 0.5f);
                         break;
-                        
+
                     case PulquiCrossoverParams::kParam_D_Id:
                         if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
                             kResultTrue)
@@ -314,42 +330,56 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
     //---pulqui---------------------
 
     SampleType* input1 = currentInputBuffers[0];
-    SampleType* input2 = currentInputBuffers[1];
     SampleType* output1 = currentOutputBuffers[0];
+    SampleType* input2 = currentInputBuffers[1];
     SampleType* output2 = currentOutputBuffers[1];
-    
-    
-    #if 0
 
-    double freq = (double) mSplitValue * 20000.;
+
+    #if 1
+
+    double freq1 = (double) mSplit_1 * 20000.;
+    double freq2 = (double) mSplit_2 * 20000.;
+    double freq3 = (double) mSplit_3 * 20000.;
     double sr = processSetup.sampleRate;
-    double in, lpout, hpout;
+    double in, lpAout, hpAout, lpBout, hpBout, lpCout, hpCout;
     for (int32 n = 0; n < numFrames; n++)
     {
-        pqcrossover_tilde_setcrossf(ch1, freq, sr);
         in = input1[n];
-        lpout = pqcrossover_tilde_lp(ch1, in);
-        hpout = pqcrossover_tilde_hp(ch1, in);
+        pqcrossover_tilde_setcrossf(ch1A, freq2, sr);
+        lpAout = pqcrossover_tilde_lp(ch1A, in);
+        hpAout = pqcrossover_tilde_hp(ch1A, in);
+        pqcrossover_tilde_setcrossf(ch1B, freq1, sr);
+        lpBout = pqcrossover_tilde_lp(ch1B, lpAout);
+        hpBout = pqcrossover_tilde_hp(ch1B, lpAout);
+        pqcrossover_tilde_setcrossf(ch1C, freq3, sr);
+        lpCout = pqcrossover_tilde_lp(ch1C, hpAout);
+        hpCout = pqcrossover_tilde_hp(ch1C, hpAout);
         if (mBypass)
             output1[n] = in;
         else
-            mLp ? output1[n] = lpout : output1[n] = hpout;
+            output1[n] = (lpBout * mParam_A) + (hpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
         if(mIsStereo)
         {
-            pqcrossover_tilde_setcrossf(ch2, freq, sr);
             in = input2[n];
-            lpout = pqcrossover_tilde_lp(ch2, in);
-            hpout = pqcrossover_tilde_hp(ch2, in);
+            pqcrossover_tilde_setcrossf(ch2A, freq2, sr);
+            lpAout = pqcrossover_tilde_lp(ch2A, in);
+            hpAout = pqcrossover_tilde_hp(ch2A, in);
+            pqcrossover_tilde_setcrossf(ch2B, freq1, sr);
+            lpBout = pqcrossover_tilde_lp(ch2B, lpAout);
+            hpBout = pqcrossover_tilde_hp(ch2B, lpAout);
+            pqcrossover_tilde_setcrossf(ch2C, freq3, sr);
+            lpCout = pqcrossover_tilde_lp(ch2C, hpAout);
+            hpCout = pqcrossover_tilde_hp(ch2C, hpAout);
             if (mBypass)
                 output2[n] = in;
             else
-                mLp ? output2[n] = lpout : output2[n] = hpout;
+                output2[n] = (lpBout * mParam_A) + (hpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
         }
     }
 
     #endif
-    
-    
+
+
     return kResultOk;
 }
 
@@ -366,11 +396,11 @@ tresult PLUGIN_API PlugProcessor::setState (IBStream* state)
     float Split_1= 0.f;
     if (streamer.readFloat (Split_1) == false)
         return kResultFalse;
-        
+
     float Split_2= 0.f;
     if (streamer.readFloat (Split_2) == false)
         return kResultFalse;
-        
+
     float Split_3= 0.f;
     if (streamer.readFloat (Split_3) == false)
         return kResultFalse;
@@ -382,19 +412,19 @@ tresult PLUGIN_API PlugProcessor::setState (IBStream* state)
     int32 Param_A = 0;
     if (streamer.readInt32 (Param_A) == false)
         return kResultFalse;
-        
+
     int32 Param_B = 0;
     if (streamer.readInt32 (Param_B) == false)
         return kResultFalse;
-        
+
     int32 Param_C = 0;
     if (streamer.readInt32 (Param_C) == false)
         return kResultFalse;
-        
+
     int32 Param_D = 0;
     if (streamer.readInt32 (Param_D) == false)
         return kResultFalse;
-                
+
     mSplit_1 = Split_1;
     mSplit_2 = Split_2;
     mSplit_3 = Split_3;
@@ -403,8 +433,8 @@ tresult PLUGIN_API PlugProcessor::setState (IBStream* state)
     mParam_B = Param_B > 0;
     mParam_C = Param_C > 0;
     mParam_D = Param_D > 0;
-    
-    
+
+
     return kResultOk;
 }
 
