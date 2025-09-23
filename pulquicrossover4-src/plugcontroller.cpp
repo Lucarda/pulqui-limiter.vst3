@@ -147,7 +147,7 @@ tresult PLUGIN_API PlugController::initialize (FUnknown* context)
                                  Vst::ParameterInfo::kCanAutomate,
                                  PulquiCrossoverParams::kParam_D_Id);
                                  
-        parameters.addParameter (STR16 ("F2 first filter"), nullptr, 1, 0,
+        parameters.addParameter (STR16 ("F2 as first filter"), nullptr, 1, 0,
                                  Vst::ParameterInfo::kCanAutomate,
                                  PulquiCrossoverParams::k_F2_asFirstFilter_Id);
 

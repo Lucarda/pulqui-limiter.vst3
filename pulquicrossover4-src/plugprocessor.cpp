@@ -347,11 +347,12 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
     double freq2 = (double) mSplit_2 * 20000.;
     double freq3 = (double) mSplit_3 * 20000.;
     double sr = processSetup.sampleRate;
-    
+    int ms2samples = (int) sr * (900 / 1000.); // 900ms
+    double fadeStep = 1. / ms2samples;
 
-    if (!mParam_F2_asFirstFilter)
+    for (int32 n = 0; n < numFrames; n++)
     {
-        for (int32 n = 0; n < numFrames; n++)
+        if (!mParam_F2_asFirstFilter)
         {
             double in, lpAout, hpAout, lpBout, hpBout, lpCout, hpCout;
             in = input1[n];
@@ -367,7 +368,8 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
             if (mBypass)
                 output1[n] = in;
             else
-                output1[n] = (lpAout * mParam_A) + (lpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
+                output1[n] = ((lpAout * mParam_A) + (lpBout * mParam_B) +
+                (lpCout * mParam_C) + (hpCout * mParam_D)) * mfade;
             if(mIsStereo)
             {
                 in = input2[n];
@@ -383,13 +385,11 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
                 if (mBypass)
                     output2[n] = in;
                 else
-                    output2[n] = (lpAout * mParam_A) + (lpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
+                    output2[n] = ((lpAout * mParam_A) + (lpBout * mParam_B) +
+                        (lpCout * mParam_C) + (hpCout * mParam_D)) * mfade;
             }
         }
-    }
-    else
-    {
-        for (int32 n = 0; n < numFrames; n++)
+        else // mParam_F2_asFirstFilter
         {
             double in, lpAout, hpAout, lpBout, hpBout, lpCout, hpCout;
             in = input1[n];
@@ -405,7 +405,8 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
             if (mBypass)
                 output1[n] = in;
             else
-                output1[n] = (lpBout * mParam_A) + (hpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
+                output1[n] = ((lpBout * mParam_A) + (hpBout * mParam_B) +
+                    (lpCout * mParam_C) + (hpCout * mParam_D)) * mfade;
             if(mIsStereo)
             {
                 in = input2[n];
@@ -421,10 +422,20 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
                 if (mBypass)
                     output2[n] = in;
                 else
-                    output2[n] = (lpBout * mParam_A) + (hpBout * mParam_B) + (lpCout * mParam_C) + (hpCout * mParam_D);
+                    output2[n] = ((lpBout * mParam_A) + (hpBout * mParam_B) +
+                    (lpCout * mParam_C) + (hpCout * mParam_D)) * mfade;
             }
         }
+        // fade
+        if (mfade < 1.)
+        {
+            audiolog += fadeStep;
+            mfade = audiolog * audiolog;
+		}
+        if (mfade > 1.)
+            mfade = 1.;
     }
+
 
     #endif
 

@@ -128,8 +128,9 @@ protected:
     bool mParam_D = true;
     bool mParam_F2_asFirstFilter = false;
     bool m_oldParam_F2_asFirstFilter = false;
-    
-    
+    double mfade = 1;
+    double audiolog;
+   
 
     double pqcrossover_tilde_lp(Buffer *x, double in);
     double pqcrossover_tilde_hp(Buffer *x, double in);

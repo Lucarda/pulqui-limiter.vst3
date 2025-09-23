@@ -34,7 +34,9 @@ double PlugProcessor::pqcrossover_tilde_lp(Buffer *x, double in)
 {
     x->lp.tempx=in;
 
-    x->lp.tempy=x->lp.a0*x->lp.tempx+x->lp.a1*x->lp.xm1+x->lp.a2*x->lp.xm2+x->lp.a3*x->lp.xm3+x->lp.a4*x->lp.xm4-x->b1*x->lp.ym1-x->b2*x->lp.ym2-x->b3*x->lp.ym3-x->b4*x->lp.ym4;
+    x->lp.tempy=x->lp.a0*x->lp.tempx+x->lp.a1*x->lp.xm1+x->lp.a2*
+        x->lp.xm2+x->lp.a3*x->lp.xm3+x->lp.a4*x->lp.xm4-x->b1*
+        x->lp.ym1-x->b2*x->lp.ym2-x->b3*x->lp.ym3-x->b4*x->lp.ym4;
     x->lp.xm4=x->lp.xm3;
     x->lp.xm3=x->lp.xm2;
     x->lp.xm2=x->lp.xm1;
@@ -52,7 +54,9 @@ double PlugProcessor::pqcrossover_tilde_hp(Buffer *x, double in)
 {
     x->hp.tempx=in;
 
-    x->hp.tempy=x->hp.a0*x->hp.tempx+x->hp.a1*x->hp.xm1+x->hp.a2*x->hp.xm2+x->hp.a3*x->hp.xm3+x->hp.a4*x->hp.xm4-x->b1*x->hp.ym1-x->b2*x->hp.ym2-x->b3*x->hp.ym3-x->b4*x->hp.ym4;
+    x->hp.tempy=x->hp.a0*x->hp.tempx+x->hp.a1*x->hp.xm1+x->hp.a2*
+        x->hp.xm2+x->hp.a3*x->hp.xm3+x->hp.a4*x->hp.xm4-x->b1*
+        x->hp.ym1-x->b2*x->hp.ym2-x->b3*x->hp.ym3-x->b4*x->hp.ym4;
     x->hp.xm4=x->hp.xm3;
     x->hp.xm3=x->hp.xm2;
     x->hp.xm2=x->hp.xm1;
@@ -106,11 +110,15 @@ void PlugProcessor::pqcrossover_setup_filter(Buffer *x)
 }
 
 
-void PlugProcessor::pqcrossover_tilde_setcrossf(Buffer *x, double freq, 
+void PlugProcessor::pqcrossover_tilde_setcrossf(Buffer *x, double freq,
                                                         double samplerate)
 {
-    if (freq < 20. || freq > 20000.) return;
-    if (freq != x->fc || samplerate != x->srate || mParam_F2_asFirstFilter != m_oldParam_F2_asFirstFilter)
+    if (freq < 20. || freq > 20000.)
+        return;
+    if (mParam_F2_asFirstFilter != m_oldParam_F2_asFirstFilter)
+        mfade = 0, audiolog = 0;
+    if (freq != x->fc || samplerate != x->srate || mParam_F2_asFirstFilter
+                                            != m_oldParam_F2_asFirstFilter)
     {
         x->fc = freq;
         x->srate = samplerate;
