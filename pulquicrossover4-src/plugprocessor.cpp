@@ -202,7 +202,6 @@ tresult PLUGIN_API PlugProcessor::terminate ()
         ch2B = NULL;
         ch2C = NULL;
     }
-    printf("LUCARDA -- terminate called\n");
     return AudioEffect::terminate ();
 }
 
@@ -349,12 +348,31 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
     double sr = processSetup.sampleRate;
     int ms2samples = (int) sr * (900 / 1000.); // 900ms
     double fadeStep = 1. / ms2samples;
+    double in, lpAout, hpAout, lpBout, hpBout, lpCout, hpCout;
+    
+    if (mParam_F2_asFirstFilter != m_oldParam_F2_asFirstFilter)
+    {
+        mfade = 0, audiolog = 0;
+        m_oldParam_F2_asFirstFilter = mParam_F2_asFirstFilter;
+    }
+    
+    /* i would have liked to use the buffers as arrays for mono or stereo
+       to avoid duplicate code but it didn't worked on some hosts (?). 
+       I have to learn more c++. */
 
     for (int32 n = 0; n < numFrames; n++)
     {
+        // fade in
+        if (mfade < 1.)
+        {
+            audiolog += fadeStep;
+            mfade = audiolog * audiolog;
+        }
+        if (mfade > 1.)
+            mfade = 1.;
+        
         if (!mParam_F2_asFirstFilter)
         {
-            double in, lpAout, hpAout, lpBout, hpBout, lpCout, hpCout;
             in = input1[n];
             pqcrossover_tilde_setcrossf(ch1A, freq1, sr);
             lpAout = pqcrossover_tilde_lp(ch1A, in);
@@ -391,7 +409,6 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
         }
         else // mParam_F2_asFirstFilter
         {
-            double in, lpAout, hpAout, lpBout, hpBout, lpCout, hpCout;
             in = input1[n];
             pqcrossover_tilde_setcrossf(ch1A, freq2, sr);
             lpAout = pqcrossover_tilde_lp(ch1A, in);
@@ -426,14 +443,6 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
                     (lpCout * mParam_C) + (hpCout * mParam_D)) * mfade;
             }
         }
-        // fade
-        if (mfade < 1.)
-        {
-            audiolog += fadeStep;
-            mfade = audiolog * audiolog;
-		}
-        if (mfade > 1.)
-            mfade = 1.;
     }
 
 
