@@ -106,3 +106,6 @@ add_subdirectory(pulquicrossover4-src)
 
 # crossover 3bands
 add_subdirectory(pulquicrossover3-src)
+
+# crossover 2bands
+add_subdirectory(pulquicrossover2-src)
