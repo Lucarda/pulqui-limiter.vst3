@@ -103,3 +103,6 @@ add_subdirectory(pulquilimiter-src)
 
 # crossover 4bands
 add_subdirectory(pulquicrossover4-src)
+
+# crossover 3bands
+add_subdirectory(pulquicrossover3-src)
