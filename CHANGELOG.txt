@@ -1,5 +1,10 @@
 Changelog for pulqui-limiter.vst3
 
+v0.1.2, dated 26-09-2025
+- Use git submodules for the vst3 sdk.
+  No changes to pulquilimter but in this version 3 more plugins are included.
+  2, 3, and 4 band crossovers.
+  
 v0.1.1, dated 30-09-2024
 - Fix silence stuff that incorrectly resumes previous buffer on playback.
 

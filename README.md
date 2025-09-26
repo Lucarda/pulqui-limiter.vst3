@@ -2,22 +2,24 @@
 
 experimental VST3 audio limiter based on https://github.com/Lucarda/pd-pulqui.
 
+( since v0.1.2 there are 2, 3 and 4 band crossovers plugins added )
+
 there might be binaries on https://github.com/Lucarda/pulqui-limiter.vst3/releases or compile yourself.
 
 
 ### additional notes on macOS
 
-the plugin bundle is automatically built in github's CI and is not signed
+the plugins bundle is automatically built in github's CI and is not signed
 with an apple-developer id. to use the plugin downloaded from the releases
 section you must remove its quarantine attributes:
 
 - open Applications/Utilities/Terminal
 - type "sudo xattr -r -d com.apple.quarantine" and add a space
-- drag the downloaded bundle onto Terminal to add the path
+- drag the downloaded (and extracted) bundles onto Terminal to add the path
 - hit enter
 - enter your password.
 
-now you can place the bundle in your vst3 default dir and the host will
+now you can place the bundles in your vst3 default dir and the host will
 find it and make it available. note that if you compile yourself you don't 
 have to do all this quarantine stuff.
 
