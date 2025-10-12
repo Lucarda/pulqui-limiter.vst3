@@ -1,5 +1,8 @@
 Changelog for pulqui-limiter.vst3
 
+v0.1.3, dated 12-10-2025
+- Add PulquiTransfer plugin.
+
 v0.1.2, dated 26-09-2025
 - Use git submodules for the vst3 sdk.
   No changes to pulquilimter but in this version 3 more plugins are included.

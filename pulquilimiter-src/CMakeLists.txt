@@ -2,7 +2,7 @@
 # execute_process(COMMAND ${CMAKE_COMMAND} -E remove ~/.vst3/PulquiLimiter.vst3)
 
 project(PulquiLimiter
-    VERSION 0.1.2
+    VERSION 0.1.3
     DESCRIPTION "PulquiLimiter VST3 Plug-in"
 )
 
