@@ -63,7 +63,7 @@ win:
 
 mac:
 
-    cmake -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_DISABLE_CODE_SIGNING=on ../
+    cmake -G Xcode -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_DISABLE_CODE_SIGNING=on ../
 
     cmake --build . --config Release
    
