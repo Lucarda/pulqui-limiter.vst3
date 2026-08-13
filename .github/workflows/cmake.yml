@@ -48,7 +48,7 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{github.workspace}}/build
-      run: cmake -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_DISABLE_CODE_SIGNING=on -DSMTG_RUN_VST_VALIDATOR=off ../
+      run: cmake -G Xcode -DCMAKE_BUILD_TYPE:STRING=release -DSMTG_DISABLE_CODE_SIGNING=on -DSMTG_RUN_VST_VALIDATOR=off ../
 
     - name: Build
       working-directory: ${{github.workspace}}/build
