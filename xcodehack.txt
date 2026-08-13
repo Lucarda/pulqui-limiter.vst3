@@ -179,10 +179,9 @@ function(smtg_add_vst3plugin_with_pkgname target pkg_name)
     smtg_target_set_vst_win_architecture_name(${target})
     smtg_target_make_plugin_package(${target} ${pkg_name} vst3)
 
-# comment out all this     
-#    ####################
-#    # Workaround for Xcode 15 not allowing to add adhoc_codesign linker setting
-#    ####################
+    ####################
+    # Workaround for Xcode 15 not allowing to add adhoc_codesign linker setting
+    ####################
 #    if(SMTG_MAC AND XCODE_VERSION VERSION_GREATER_EQUAL 15)
 #	    get_target_property(PLUGIN_PACKAGE_PATH ${target} SMTG_PLUGIN_PACKAGE_PATH)
 #        add_custom_command(
@@ -320,3 +319,4 @@ function(smtg_add_vst3_snapshot target snapshot)
             ${snapshot}
     )
 endfunction(smtg_add_vst3_snapshot)
+
