@@ -163,6 +163,9 @@ endif()
 # limiter
 add_subdirectory(pulquilimiter-src)
 
+# limiter_b
+add_subdirectory(pulquilimiter_b-src)
+
 # crossover 4bands
 add_subdirectory(pulquicrossover4-src)
 
