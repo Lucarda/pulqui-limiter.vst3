@@ -252,8 +252,21 @@ tresult PLUGIN_API PlugProcessor::process (Vst::ProcessData& data)
                     case PulquiLimiterParams::kParamVolId:
                         if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
                             kResultTrue)
-                            mVol = (value);
+                            mVol = value;
                         break;
+                        
+                    case PulquiLimiterParams::kParamInId:
+                        if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
+                            kResultTrue)
+                            mIn = value;
+                        break;
+                        
+                    case PulquiLimiterParams::kParamMultiInId:
+                        if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
+                            kResultTrue)
+                            mMulti = value;
+                        break;
+
                 }
             }
         }
@@ -345,6 +358,28 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
     fsamplrateOld = fsamplerate;
 
 
+	if (outParamChanges)
+    {
+        int32 index = 0;
+        IParamValueQueue* paramQueue = outParamChanges->addParameterData (kParamVu1LId, index);
+        if (paramQueue)
+        {
+            int32 index2 = 0;
+            paramQueue->addPoint (0, ch1->x_vu1, index2);
+        }
+    }
+    if(outParamChanges && mIsStereo)
+    {
+        int32 index = 0;
+        IParamValueQueue* paramQueue = outParamChanges->addParameterData (kParamVu1RId, index);
+        if (paramQueue)
+        {
+            int32 index2 = 0;
+            paramQueue->addPoint (0, ch2->x_vu1, index2);
+        }
+    }
+
+
     return kResultOk;
 }
 
@@ -374,10 +409,20 @@ tresult PLUGIN_API PlugProcessor::setState (IBStream* state)
     if (streamer.readFloat (savedVol) == false)
         return kResultFalse;
 
+    float savedMulti = 0.f;
+    if (streamer.readFloat (savedMulti) == false)
+        return kResultFalse;
+        
+    float savedIn = 0.f;
+    if (streamer.readFloat (savedIn) == false)
+        return kResultFalse;
+        
     mMixValue = savedMix;
     mBypass = savedBypass > 0;
     mLatencyBypass = savedBypassLatency > 0;
     mVol = savedVol;
+    mMulti = savedMulti;
+    mIn = savedIn;
 
     return kResultOk;
 }
@@ -391,6 +436,8 @@ tresult PLUGIN_API PlugProcessor::getState (IBStream* state)
     int32 toSaveBypass = mBypass ? 1 : 0;
     int32 toSavemLatencyBypass = mLatencyBypass ? 1 : 0;
     float toSaveVol = mVol;
+    float toSaveMulti = mMulti;
+    float toSaveIn = mIn;
 
 
     IBStreamer streamer (state, kLittleEndian);
@@ -398,6 +445,8 @@ tresult PLUGIN_API PlugProcessor::getState (IBStream* state)
     streamer.writeInt32 (toSaveBypass);
     streamer.writeInt32 (toSavemLatencyBypass);
     streamer.writeFloat (toSaveVol);
+    streamer.writeFloat (toSaveMulti);
+    streamer.writeFloat (toSaveIn);
 
 
     return kResultOk;

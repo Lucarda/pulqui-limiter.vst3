@@ -67,7 +67,7 @@ public:
 
 //-----------------------------------------------------------------------------
 protected:
-    double rsamplerate;
+    //double rsamplerate;
 
 };
 

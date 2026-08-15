@@ -46,7 +46,7 @@ namespace Vst {
 class VolParameter : public Vst::Parameter
 {
 public:
-    VolParameter (int32 flags, int32 id);
+    VolParameter (int32 flags, int32 id, Steinberg::UString label);
 
     void toString (Vst::ParamValue normValue, Vst::String128 string) const SMTG_OVERRIDE;
     bool fromString (const Vst::TChar* string, Vst::ParamValue& normValue) const SMTG_OVERRIDE;
@@ -56,9 +56,9 @@ public:
 //------------------------------------------------------------------------
 // VolParameter Implementation
 //------------------------------------------------------------------------
-VolParameter::VolParameter (int32 flags, int32 id)
+VolParameter::VolParameter (int32 flags, int32 id, Steinberg::UString label)
 {
-    Steinberg::UString (info.title, USTRINGSIZE (info.title)).assign (USTRING ("Volume"));
+    Steinberg::UString (info.title, USTRINGSIZE (info.title)).assign (USTRING (label));
     Steinberg::UString (info.units, USTRINGSIZE (info.units)).assign (USTRING (""));
 
     info.flags = flags;
@@ -153,22 +153,41 @@ tresult PLUGIN_API PlugController::initialize (FUnknown* context)
     if (result == kResultTrue)
     {
         //---Create Parameters------------
+                                 
+        parameters.addParameter (STR16 ("in-multiplier"), nullptr, 10, 0,
+                                 Vst::ParameterInfo::kCanAutomate,
+                                 PulquiLimiterParams::kParamMultiInId);
+
+        auto* inParam = new VolParameter (Vst::ParameterInfo::kCanAutomate,
+         PulquiLimiterParams::kParamInId, USTRING ("Input"));
+        parameters.addParameter (inParam);                                 
+
+        parameters.addParameter (STR16 ("Feedback"), nullptr, 0, 0,
+                                 Vst::ParameterInfo::kCanAutomate,
+                                 PulquiLimiterParams::kParamMixId);
+                                                                  
+        auto* mixParam = new VolParameter (Vst::ParameterInfo::kCanAutomate,
+         PulquiLimiterParams::kParamVolId, USTRING ("Volume"));
+        parameters.addParameter (mixParam);
+        
+        parameters.addParameter (STR16 ("LatencyBypass"), nullptr, 1, 0,
+                                 Vst::ParameterInfo::kCanAutomate,
+                                 PulquiLimiterParams::kParamLatencyBypassId);                                 
+
         parameters.addParameter (STR16 ("Bypass"), nullptr, 1, 0,
                                  Vst::ParameterInfo::kCanAutomate | Vst::ParameterInfo::kIsBypass,
                                  PulquiLimiterParams::kBypassId);
+                                 
+        parameters.addParameter (STR16 ("Vu1L"), nullptr, 0, 0,
+                                 Vst::ParameterInfo::kIsReadOnly | Vst::ParameterInfo::kIsHidden,
+                                 PulquiLimiterParams::kParamVu1LId);
 
-        parameters.addParameter (STR16 ("LatencyBypass"), nullptr, 1, 0,
-                                 Vst::ParameterInfo::kCanAutomate,
-                                 PulquiLimiterParams::kParamLatencyBypassId);
-
-        parameters.addParameter (STR16 ("Feedback"), nullptr, 1, 0,
-                                 Vst::ParameterInfo::kCanAutomate,
-                                 PulquiLimiterParams::kParamMixId);
-
-        auto* mixParam = new VolParameter (Vst::ParameterInfo::kCanAutomate, PulquiLimiterParams::kParamVolId);
-        parameters.addParameter (mixParam);
-
-        auto* srateParam = new SrateParameter (Vst::ParameterInfo::kIsReadOnly , PulquiLimiterParams::kParamSrateId);
+        parameters.addParameter (STR16 ("Vu1R"), nullptr, 0, 0,
+                                 Vst::ParameterInfo::kIsReadOnly | Vst::ParameterInfo::kIsHidden,
+                                 PulquiLimiterParams::kParamVu1RId);
+                                 
+        auto* srateParam = new SrateParameter (Vst::ParameterInfo::kIsReadOnly
+         | Vst::ParameterInfo::kIsHidden, PulquiLimiterParams::kParamSrateId);
         parameters.addParameter (srateParam);
     }
     return kResultTrue;
@@ -216,6 +235,16 @@ tresult PLUGIN_API PlugController::setComponentState (IBStream* state)
     if (streamer.readFloat (VolState) == false)
         return kResultFalse;
     setParamNormalized (PulquiLimiterParams::kParamVolId, VolState);
+    
+    float MultiState;
+    if (streamer.readFloat (MultiState) == false)
+        return kResultFalse;
+    setParamNormalized (PulquiLimiterParams::kParamMultiInId, MultiState);
+    
+    float InState;
+    if (streamer.readFloat (InState) == false)
+        return kResultFalse;
+    setParamNormalized (PulquiLimiterParams::kParamInId, InState);
 
     return kResultOk;
 }

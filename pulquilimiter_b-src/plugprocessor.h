@@ -78,6 +78,7 @@ protected:
         double x_bufpulqui[PULQUI_SIZE];
         double x_input[PULQUI_SCAN_SIZE];
         double x_output[PULQUI_SCAN_SIZE];
+        double x_vu1;
         int x_pulquiblock;
     };
     Buffer *ch1 = NULL;
@@ -90,6 +91,8 @@ protected:
     double fsamplrateOld;
     bool mLatencyBypass = false;
     bool mIsStereo = true;
+    Vst::ParamValue mIn = 0;
+	Vst::ParamValue mMulti = 0;
 
 
 

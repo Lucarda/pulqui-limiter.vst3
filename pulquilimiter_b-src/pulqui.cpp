@@ -23,6 +23,7 @@
  */
 
 #include "./plugprocessor.h"
+#include <cmath> 
 
 namespace Steinberg {
 namespace Vst{
@@ -137,14 +138,22 @@ void PlugProcessor::pulqui(Buffer* self, int32 nSamples)
 {
     int n_samples = (int)nSamples;
     double thresh = mThreshValue;
-    double f, postmix;
+    double f, postmix, vu1buffer, inputfactor;
 
     for (int i = 0; i < n_samples; i++)
     {
-        self->x_ramch[i + self->x_pulquiblock] = self->x_input[i];
+        // vu1
+		vu1buffer = 0;
+		self->x_vu1 = 0;
+		inputfactor = mIn + ((int)(mMulti * 10) + 1);
+        vu1buffer = std::fabs(self->x_bufsignalout[i + self->x_pulquiblock]);
+        if (vu1buffer > 1)
+        if (vu1buffer > self->x_vu1) self->x_vu1 = vu1buffer;
+        // apply input and multiplier
+        self->x_ramch[i + self->x_pulquiblock] = self->x_input[i] * inputfactor;
         if(mLatencyBypass)
         {
-            self->x_output[i] = self->x_bufsignalout[i + self->x_pulquiblock];
+            self->x_output[i] = self->x_bufsignalout[i + self->x_pulquiblock] / inputfactor;
         }
         else
         {
@@ -169,6 +178,7 @@ void PlugProcessor::pulqui(Buffer* self, int32 nSamples)
         self->x_pulquiblock = 0;
     }
     else self->x_pulquiblock += n_samples;
+
 }
 
 } // namespace

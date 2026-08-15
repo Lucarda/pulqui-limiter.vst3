@@ -36,6 +36,10 @@ enum PulquiLimiterParams : Vst::ParamID
     kParamSrateId = 103,
     kParamLatencyBypassId = 104,
     kParamVolId = 105,
+    kParamInId = 106,
+    kParamVu1LId = 107,
+    kParamVu1RId = 108,
+    kParamMultiInId = 109,
 };
 
 
