@@ -143,7 +143,7 @@ void PlugProcessor::pulqui(Buffer* self, int32 nSamples)
     for (int i = 0; i < n_samples; i++)
     {
         // input
-        inputfactor = mIn + ((int)(mMulti * 10) + 1);
+        inputfactor = mIn + ((int)(mMulti * 29) + 1);
 		mXMultiDisplay = inputfactor / 100.;
         // vu1
 		vu1buffer = 0;
