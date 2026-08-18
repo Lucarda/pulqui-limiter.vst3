@@ -142,10 +142,12 @@ void PlugProcessor::pulqui(Buffer* self, int32 nSamples)
 
     for (int i = 0; i < n_samples; i++)
     {
+        // input
+        inputfactor = mIn + ((int)(mMulti * 10) + 1);
+		mXMultiDisplay = inputfactor / 100.;
         // vu1
 		vu1buffer = 0;
 		self->x_vu1 = 0;
-		inputfactor = mIn + ((int)(mMulti * 10) + 1);
         vu1buffer = std::fabs(self->x_bufsignalout[i + self->x_pulquiblock]);
         if (vu1buffer > 1)
         if (vu1buffer > self->x_vu1) self->x_vu1 = vu1buffer;

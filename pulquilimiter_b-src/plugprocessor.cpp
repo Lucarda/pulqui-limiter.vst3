@@ -343,8 +343,7 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
     double fsamplerate = processSetup.sampleRate;
     //---3) Write outputs parameter changes-----------
     IParameterChanges* outParamChanges = data.outputParameterChanges;
-    // a new value of VuMeter will be send to the host
-    // (the host will send it back in sync to our controller for updating our editor)
+	// latency display
     if (outParamChanges && fsamplrateOld != fsamplerate)
     {
         int32 index = 0;
@@ -357,7 +356,20 @@ tresult PlugProcessor::processAudio (Vst::ProcessData& data)
     }
     fsamplrateOld = fsamplerate;
 
-
+	// input factor display
+    if (outParamChanges && mXMultiDisplayOld != mXMultiDisplay)
+    {
+        int32 index = 0;
+        IParamValueQueue* paramQueue = outParamChanges->addParameterData (kParamInXDisplayId, index);
+        if (paramQueue)
+        {
+            int32 index2 = 0;
+            paramQueue->addPoint (0, mXMultiDisplay, index2);
+        }
+    }
+    mXMultiDisplayOld = mXMultiDisplay;
+    
+	// Vu display
 	if (outParamChanges)
     {
         int32 index = 0;

@@ -40,6 +40,7 @@ enum PulquiLimiterParams : Vst::ParamID
     kParamVu1LId = 107,
     kParamVu1RId = 108,
     kParamMultiInId = 109,
+    kParamInXDisplayId = 110,
 };
 
 

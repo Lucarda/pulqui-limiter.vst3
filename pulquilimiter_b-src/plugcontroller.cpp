@@ -108,6 +108,8 @@ bool VolParameter::fromString (const Vst::TChar* string, Vst::ParamValue& normVa
 
 
 //------------------------------------------------------------------------
+// SrateParameter Implementation
+//------------------------------------------------------------------------
 
 class SrateParameter : public Vst::Parameter
 {
@@ -145,6 +147,47 @@ void SrateParameter::toString (Vst::ParamValue normValue, Vst::String128 string)
 
     Steinberg::UString (string, 128).fromAscii (text);
 }
+
+//------------------------------------------------------------------------
+// InXDisplayParameter Implementation
+//------------------------------------------------------------------------
+
+class InXDisplayParameter : public Vst::Parameter
+{
+public:
+    InXDisplayParameter (int32 flags, int32 id);
+
+    void toString (Vst::ParamValue normValue, Vst::String128 string) const SMTG_OVERRIDE;
+};
+
+//------------------------------------------------------------------------
+InXDisplayParameter::InXDisplayParameter (int32 flags, int32 id)
+{
+    Steinberg::UString (info.title, USTRINGSIZE (info.title)).assign (USTRING ("input-factor"));
+    Steinberg::UString (info.units, USTRINGSIZE (info.units)).assign (USTRING (""));
+
+    info.flags = flags;
+    info.id = id;
+    info.stepCount = 0;
+    info.defaultNormalizedValue = 0.5f;
+    info.unitId = Vst::kRootUnitId;
+
+    setNormalized (.5f);
+}
+
+//------------------------------------------------------------------------
+void InXDisplayParameter::toString (Vst::ParamValue normValue, Vst::String128 string) const
+{
+    char text[100];
+    double infactor = normValue * 100;
+    snprintf (text, 100, "%.2f", infactor);
+
+    Steinberg::UString (string, 128).fromAscii (text);
+}
+
+//------------------------------------------------------------------------
+// initialize
+//------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 tresult PLUGIN_API PlugController::initialize (FUnknown* context)
@@ -189,6 +232,12 @@ tresult PLUGIN_API PlugController::initialize (FUnknown* context)
         auto* srateParam = new SrateParameter (Vst::ParameterInfo::kIsReadOnly
          | Vst::ParameterInfo::kIsHidden, PulquiLimiterParams::kParamSrateId);
         parameters.addParameter (srateParam);
+        
+        auto* inxParam = new InXDisplayParameter (Vst::ParameterInfo::kIsReadOnly
+         | Vst::ParameterInfo::kIsHidden, PulquiLimiterParams::kParamInXDisplayId);
+        parameters.addParameter (inxParam);
+        
+        
     }
     return kResultTrue;
 }

@@ -93,6 +93,8 @@ protected:
     bool mIsStereo = true;
     Vst::ParamValue mIn = 0;
 	Vst::ParamValue mMulti = 0;
+	Vst::ParamValue mXMultiDisplay = 0;
+	Vst::ParamValue mXMultiDisplayOld = 0;
 
 
 

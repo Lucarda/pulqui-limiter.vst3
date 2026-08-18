@@ -15,6 +15,7 @@
 			"vu1L": "107",
 			"vu1R": "108",
 			"multiplier": "109",
+			"InXDisplayId": "110",
 			"mix": "102",
 			"vol": "105"
 		},
@@ -44,7 +45,7 @@
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "16"
+				"SelectedRow": "9"
 			},
 			"UIBitmapsDataSource": {
 				"SelectedRow": "-1"
@@ -624,19 +625,19 @@
 							"wheel-inc-value": "0.1"
 						}
 					},
-					"CParamDisplay": {
+					"CTextLabel": {
 						"attributes": {
 							"back-color": "~ BlackCColor",
 							"background-offset": "0, 0",
-							"class": "CParamDisplay",
-							"control-tag": "multiplier",
+							"class": "CTextLabel",
+							"control-tag": "InXDisplayId",
 							"font": "~ NormalFont",
 							"font-antialias": "true",
 							"font-color": "~ WhiteCColor",
 							"frame-color": "~ BlackCColor",
 							"frame-width": "1",
 							"opacity": "0.61",
-							"origin": "370, 65",
+							"origin": "365, 65",
 							"round-rect-radius": "6",
 							"shadow-color": "~ RedCColor",
 							"size": "55, 20",
@@ -651,6 +652,43 @@
 							"text-inset": "0, 0",
 							"text-rotation": "0",
 							"text-shadow-offset": "1, 1",
+							"transparent": "false",
+							"value-precision": "2",
+							"wants-focus": "false",
+							"wheel-inc-value": "0.1"
+						}
+					},
+					"CTextLabel": {
+						"attributes": {
+							"back-color": "~ BlackCColor",
+							"background-offset": "0, 0",
+							"class": "CTextLabel",
+							"default-value": "0.5",
+							"font": "~ NormalFont",
+							"font-antialias": "true",
+							"font-color": "~ WhiteCColor",
+							"frame-color": "~ BlackCColor",
+							"frame-width": "1",
+							"max-value": "1",
+							"min-value": "0",
+							"mouse-enabled": "true",
+							"opacity": "0.61",
+							"origin": "410, 65",
+							"round-rect-radius": "6",
+							"shadow-color": "~ RedCColor",
+							"size": "30, 20",
+							"style-3D-in": "false",
+							"style-3D-out": "false",
+							"style-no-draw": "false",
+							"style-no-frame": "false",
+							"style-no-text": "false",
+							"style-round-rect": "false",
+							"style-shadow-text": "false",
+							"text-alignment": "center",
+							"text-inset": "0, 0",
+							"text-rotation": "0",
+							"text-shadow-offset": "1, 1",
+							"title": "X",
 							"transparent": "false",
 							"value-precision": "2",
 							"wants-focus": "false",
