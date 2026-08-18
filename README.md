@@ -2,7 +2,9 @@
 
 experimental VST3 audio limiter based on https://github.com/Lucarda/pd-pulqui.
 
-( since v0.1.2 there are 2, 3 and 4 band crossovers plugins added )
+( since v0.1.2 there are 2, 3 and 4 band crossovers plugins added)
+( since v0.1.3 pulquitransfer plugin added)
+( since v0.1.4 pulquilimiter_b plugin added)
 
 there might be binaries on https://github.com/Lucarda/pulqui-limiter.vst3/releases or compile yourself.
 
